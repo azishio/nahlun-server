@@ -5,13 +5,13 @@ info:
   version: 1.0.0
 tags:
   - name: tile
-  - name: public-api
-  - name: public-api/river
-  - name: public-api/voxel_model
-  - name: public-api/sensor
-  - name: private-api
-  - name: private-api/sensor
-  - name: private-api/voxel_model
+  - name: public
+  - name: public/river
+  - name: public/voxel_model
+  - name: public/sensor
+  - name: private
+  - name: private/sensor
+  - name: private/voxel_model
 paths:
   /tiles/water/{z}/{x}/{y}:
     get:
@@ -113,7 +113,7 @@ paths:
       deprecated: false
       description: ''
       tags:
-        - public-api/river
+        - public/river
       parameters:
         - name: id
           in: query
@@ -157,7 +157,7 @@ paths:
           headers: {}
           x-apidog-name: 成功
       security: []
-      x-apidog-folder: public-api/river
+      x-apidog-folder: public/river
       x-apidog-status: designing
       x-run-in-apidog: https://app.apidog.com/web/project/663078/apis/api-10013003-run
   /api/river-nodes/bulk:
@@ -166,7 +166,7 @@ paths:
       deprecated: false
       description: ''
       tags:
-        - public-api/river
+        - public/river
       parameters:
         - name: max-longitude
           in: query
@@ -211,7 +211,7 @@ paths:
           headers: {}
           x-apidog-name: 成功
       security: []
-      x-apidog-folder: public-api/river
+      x-apidog-folder: public/river
       x-apidog-status: designing
       x-run-in-apidog: https://app.apidog.com/web/project/663078/apis/api-10022275-run
   /api/voxel-models/bulk:
@@ -220,7 +220,7 @@ paths:
       deprecated: false
       description: ''
       tags:
-        - public-api/voxel_model
+        - public/voxel_model
       parameters:
         - name: max-longitude
           in: query
@@ -262,7 +262,7 @@ paths:
           headers: {}
           x-apidog-name: 成功
       security: []
-      x-apidog-folder: public-api/voxel_model
+      x-apidog-folder: public/voxel_model
       x-apidog-status: designing
       x-run-in-apidog: https://app.apidog.com/web/project/663078/apis/api-10006499-run
   /api/voxel-models:
@@ -271,7 +271,7 @@ paths:
       deprecated: false
       description: 指定したidのモデルを取得する
       tags:
-        - public-api/voxel_model
+        - public/voxel_model
       parameters:
         - name: id
           in: query
@@ -293,7 +293,7 @@ paths:
           headers: {}
           x-apidog-name: 成功
       security: []
-      x-apidog-folder: public-api/voxel_model
+      x-apidog-folder: public/voxel_model
       x-apidog-status: designing
       x-run-in-apidog: https://app.apidog.com/web/project/663078/apis/api-10022261-run
     put:
@@ -301,7 +301,7 @@ paths:
       deprecated: false
       description: ''
       tags:
-        - private-api/voxel_model
+        - private/voxel_model
       parameters:
         - name: id
           in: query
@@ -332,7 +332,7 @@ paths:
           x-apidog-name: 成功
       security:
         - bearer: []
-      x-apidog-folder: private-api/voxel_model
+      x-apidog-folder: private/voxel_model
       x-apidog-status: designing
       x-run-in-apidog: https://app.apidog.com/web/project/663078/apis/api-10022291-run
     delete:
@@ -340,7 +340,7 @@ paths:
       deprecated: false
       description: ''
       tags:
-        - private-api/voxel_model
+        - private/voxel_model
       parameters:
         - name: id
           in: query
@@ -363,7 +363,7 @@ paths:
           x-apidog-name: 成功
       security:
         - bearer: []
-      x-apidog-folder: private-api/voxel_model
+      x-apidog-folder: private/voxel_model
       x-apidog-status: designing
       x-run-in-apidog: https://app.apidog.com/web/project/663078/apis/api-10022292-run
   /api/sensors:
@@ -372,7 +372,7 @@ paths:
       deprecated: false
       description: ''
       tags:
-        - public-api/sensor
+        - public/sensor
       parameters:
         - name: id
           in: query
@@ -415,7 +415,7 @@ paths:
           headers: {}
           x-apidog-name: 成功
       security: []
-      x-apidog-folder: public-api/sensor
+      x-apidog-folder: public/sensor
       x-apidog-status: designing
       x-run-in-apidog: https://app.apidog.com/web/project/663078/apis/api-10004197-run
     put:
@@ -423,7 +423,7 @@ paths:
       deprecated: false
       description: センサー情報を更新する。初回はすべてのリクエストボディが必須プロパティ
       tags:
-        - private-api/sensor
+        - private/sensor
       parameters:
         - name: id
           in: query
@@ -460,7 +460,7 @@ paths:
           x-apidog-name: 成功
       security:
         - bearer: []
-      x-apidog-folder: private-api/sensor
+      x-apidog-folder: private/sensor
       x-apidog-status: designing
       x-run-in-apidog: https://app.apidog.com/web/project/663078/apis/api-10022285-run
     delete:
@@ -468,7 +468,7 @@ paths:
       deprecated: false
       description: ''
       tags:
-        - private-api/sensor
+        - private/sensor
       parameters:
         - name: id
           in: query
@@ -491,7 +491,7 @@ paths:
           x-apidog-name: 成功
       security:
         - bearer: []
-      x-apidog-folder: private-api/sensor
+      x-apidog-folder: private/sensor
       x-apidog-status: designing
       x-run-in-apidog: https://app.apidog.com/web/project/663078/apis/api-10022286-run
   /api/sersors/bulk:
@@ -500,7 +500,7 @@ paths:
       deprecated: false
       description: ''
       tags:
-        - private-api/sensor
+        - private/sensor
       parameters: []
       responses:
         '200':
@@ -534,7 +534,7 @@ paths:
           x-apidog-name: 成功
       security:
         - bearer: []
-      x-apidog-folder: private-api/sensor
+      x-apidog-folder: private/sensor
       x-apidog-status: designing
       x-run-in-apidog: https://app.apidog.com/web/project/663078/apis/api-10022287-run
   /api/sensors/bulk:
@@ -543,7 +543,7 @@ paths:
       deprecated: false
       description: ''
       tags:
-        - private-api/sensor
+        - private/sensor
       parameters: []
       responses:
         '200':
@@ -559,7 +559,7 @@ paths:
           x-apidog-name: 成功
       security:
         - bearer: []
-      x-apidog-folder: private-api/sensor
+      x-apidog-folder: private/sensor
       x-apidog-status: designing
       x-run-in-apidog: https://app.apidog.com/web/project/663078/apis/api-10022288-run
 components:
