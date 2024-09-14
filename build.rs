@@ -26,7 +26,7 @@ fn openapi_gen() {
                 .to_str()
                 .expect("Failed to convert openapi.yaml path to str"),
             "-g",
-            "rust",
+            "rust-axum",
             "-o",
             output_dir
                 .to_str()
