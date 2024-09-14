@@ -5,3 +5,8 @@ edition = "2021"
 build = "build.rs"
 
 [dependencies]
+axum = "0.7.5"
+axum-extra = "0.9.3"
+serde = { version = "1.0.210", features = ["derive"] }
+tokio = { version = "1.40.0", features = ["macros", "rt-multi-thread", "fs"] }
+openapi = { path = "./openapi_gen", features = ["server"] }
