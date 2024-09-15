@@ -41,6 +41,7 @@ impl CachedData {
 }
 
 // 2層キャッシュの構造体
+#[derive(Clone)]
 pub struct MultiLayerCache {
     memory: Cache<CacheKey, CachedData, FxBuildHasher>,
     disk: DiskCache,
@@ -96,6 +97,7 @@ impl MultiLayerCache {
     }
 }
 
+#[derive(Clone)]
 pub struct DiskCache {
     disk_path: PathBuf,
     metadata: Cache<CacheKey, (CachedDataDiscriminants, PathBuf), FxBuildHasher>,
