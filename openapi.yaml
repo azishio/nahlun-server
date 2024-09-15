@@ -120,8 +120,8 @@ paths:
           description: ID番号
           required: true
           schema:
-            type: string
-            format: uuid
+            type: integer
+            format: uint32
         - name: relation_limit
           in: query
           description: 繋がりのあるノードをいくつ持ってくるか
@@ -568,9 +568,9 @@ components:
       type: object
       properties:
         id:
-          type: string
-          description: ID番号
-          format: uuid
+          type: integer
+          description: ZoomLv18でのヒルベルト値
+          format: uint32
         coord: *ref_2
       x-apidog-orders:
         - id
@@ -595,14 +595,20 @@ components:
           type: integer
           format: uint32
           description: 前回測定からのインターバル [分]
+        datetime:
+          type: integer
+          description: UNIX時間
+          format: uint64
       x-apidog-orders:
         - distance
         - battery_voltage
         - previous_sleep_time
+        - datetime
       required:
         - distance
         - battery_voltage
         - previous_sleep_time
+        - datetime
       x-apidog-ignore-properties: []
       x-apidog-folder: ''
     NetworkStatus:
@@ -682,19 +688,14 @@ components:
           format: uuid
         aabb:
           $ref: '#/components/schemas/LLAABB'
-        z_index:
-          type: integer
-          format: int32
       x-apidog-orders:
         - name
         - id
         - aabb
-        - z_index
       required:
         - name
         - id
         - aabb
-        - z_index
       x-apidog-ignore-properties: []
       x-apidog-folder: ''
     LLAABB:
