@@ -217,10 +217,7 @@ paths:
             application/json:
               schema:
                 type: array
-                items:
-                  type: array
-                  items: *ref_0
-                  description: RiverNodeのつながり
+                items: *ref_0
                 description: RiverNodeのつながりの集合
           headers: {}
           x-apidog-name: 成功
