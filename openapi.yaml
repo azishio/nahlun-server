@@ -409,29 +409,54 @@ paths:
       x-apidog-status: designing
       x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10004197-run"
     put:
-      summary: 一括登録/上書き
+      summary: 登録/上書き
       deprecated: false
       description: ""
       tags:
         - private/sensor
-      parameters: []
+      parameters:
+        - name: id
+          in: query
+          description: ID番号
+          required: true
+          schema:
+            type: string
+            format: uuid
       requestBody:
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: "#/components/schemas/Sensor"
+              type: object
+              properties:
+                altitude:
+                  type: number
+                  format: float
+                interval:
+                  type: integer
+                  minimum: 0.0
+                  format: int32
+                scope:
+                  type: number
+                  format: float
+                  minimum: 0.0
+              x-apidog-refs: {}
+              x-apidog-orders:
+                - altitude
+                - interval
+                - scope
+              required:
+                - altitude
+                - interval
+                - scope
+              x-apidog-ignore-properties: []
       responses:
         "200":
           description: ""
           content:
             application/json:
               schema:
-                type: object
-                properties: {}
-                x-apidog-orders: []
-                x-apidog-ignore-properties: []
+                type: string
+                format: uuid
           headers: {}
           x-apidog-name: 成功
       security:
@@ -440,30 +465,27 @@ paths:
       x-apidog-status: designing
       x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10022287-run"
     delete:
-      summary: 一括削除
+      summary: 削除
       deprecated: false
       description: ""
       tags:
         - private/sensor
-      parameters: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                type: string
-                format: uuid
+      parameters:
+        - name: id
+          in: query
+          description: ID番号
+          required: true
+          schema:
+            type: string
+            format: uuid
       responses:
         "200":
           description: ""
           content:
             application/json:
               schema:
-                type: object
-                properties: {}
-                x-apidog-orders: []
-                x-apidog-ignore-properties: []
+                type: string
+                format: uuid
           headers: {}
           x-apidog-name: 成功
       security:
