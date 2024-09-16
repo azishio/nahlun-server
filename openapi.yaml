@@ -460,10 +460,10 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: string
-                  format: uuid
+                type: object
+                properties: {}
+                x-apidog-orders: []
+                x-apidog-ignore-properties: []
           headers: {}
           x-apidog-name: 成功
       security:
@@ -642,8 +642,9 @@ components:
           type: string
           description: ID番号
           format: uuid
-        coord:
-          $ref: "#/components/schemas/Coord3D"
+        altitude:
+          type: number
+          format: float
         interval:
           type: integer
           minimum: 0.0
@@ -654,12 +655,12 @@ components:
           minimum: 0.0
       x-apidog-orders:
         - id
-        - coord
+        - altitude
         - interval
         - scope
       required:
         - id
-        - coord
+        - altitude
         - interval
         - scope
       x-apidog-ignore-properties: []
