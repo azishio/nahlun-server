@@ -32,11 +32,11 @@ impl From<RiverNode> for openapi::models::RiverNode {
 /// RiverNodeに対して:AFFECTSラベルのリレーションシップで結ぶことで、水位の予測に影響を与えるノードを指定する
 #[derive(Deserialize)]
 pub struct Sensor {
-    pub name: String,
     pub id: Uuid,
     pub location: Point2D,
     pub altitude: f32,
     pub interval: u32,
+    pub scope: f32,
 }
 
 impl From<Sensor> for openapi::models::Sensor {
@@ -46,6 +46,7 @@ impl From<Sensor> for openapi::models::Sensor {
             location,
             altitude,
             interval,
+            scope,
             ..
         } = sensor;
         let coord = Coord3D {
@@ -57,6 +58,7 @@ impl From<Sensor> for openapi::models::Sensor {
             id,
             coord,
             interval,
+            scope,
         }
     }
 }
