@@ -7,10 +7,10 @@ use uuid::Uuid;
 /// このノード同士を:DELAUNAYラベルのリレーションシップで結ぶことで、隣接するノードを表現する
 #[derive(Deserialize)]
 pub struct RiverNode {
-    labels: Labels,
-    location: Point2D,
-    hilbert18: u32,
-    altitude: f32,
+    pub labels: Labels,
+    pub location: Point2D,
+    pub hilbert18: u32,
+    pub altitude: f32,
 }
 
 /// 水位計を表すノード
