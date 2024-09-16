@@ -1,3 +1,4 @@
+use axum::async_trait;
 use axum::extract::Host;
 use axum::http::Method;
 use axum_extra::extract::CookieJar;
@@ -8,6 +9,7 @@ use openapi::models::{ApiVoxelModelsDeleteQueryParams, ApiVoxelModelsPutQueryPar
 
 use crate::apis::ServerImpl;
 
+#[async_trait]
 impl PrivateVoxelModel for ServerImpl {
     async fn api_voxel_models_delete(
         &self,

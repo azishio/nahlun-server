@@ -1,3 +1,4 @@
+use axum::async_trait;
 use axum::extract::Host;
 use axum::http::Method;
 use axum_extra::extract::CookieJar;
@@ -9,6 +10,7 @@ use openapi::models::{ApiSensorsDeleteQueryParams, ApiSensorsPutQueryParams, Sen
 
 use crate::apis::ServerImpl;
 
+#[async_trait]
 impl PrivateSensor for ServerImpl {
     async fn api_sensors_bulk_delete(
         &self,

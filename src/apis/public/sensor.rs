@@ -1,3 +1,4 @@
+use axum::async_trait;
 use axum::extract::Host;
 use axum::http::Method;
 use axum_extra::extract::CookieJar;
@@ -8,6 +9,7 @@ use openapi::models::{ApiSensorsGet200Response, ApiSensorsGetQueryParams};
 use crate::apis::ServerImpl;
 use crate::db;
 
+#[async_trait]
 impl PublicSensor for ServerImpl {
     async fn api_sensors_get(
         &self,

@@ -1,3 +1,4 @@
+use axum::async_trait;
 use axum::extract::Host;
 use axum::http::Method;
 use axum_extra::extract::CookieJar;
@@ -10,6 +11,7 @@ use openapi::models::{ApiRiverNodesBulkGetQueryParams, ApiRiverNodesGetQueryPara
 use crate::apis::ServerImpl;
 use crate::db;
 
+#[async_trait]
 impl PublicRiver for ServerImpl {
     async fn api_river_nodes_bulk_get(
         &self,
