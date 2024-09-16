@@ -3,7 +3,7 @@ use axum::extract::Host;
 use axum::http::Method;
 use axum_extra::extract::CookieJar;
 use openapi::apis::private_sensor::{
-    ApiSensorsDeleteResponse, ApiSersorsPutResponse, PrivateSensor,
+    ApiSensorsDeleteResponse, ApiSensorsPutResponse, PrivateSensor,
 };
 use openapi::models::Sensor;
 use uuid::Uuid;
@@ -22,13 +22,13 @@ impl PrivateSensor for ServerImpl {
         todo!()
     }
 
-    async fn api_sersors_put(
+    async fn api_sensors_put(
         &self,
         _method: Method,
         _host: Host,
         _cookies: CookieJar,
         body: Option<Vec<Sensor>>,
-    ) -> Result<ApiSersorsPutResponse, String> {
+    ) -> Result<ApiSensorsPutResponse, String> {
         todo!()
     }
 }

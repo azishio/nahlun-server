@@ -408,6 +408,37 @@ paths:
       x-apidog-folder: public/sensor
       x-apidog-status: designing
       x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10004197-run"
+    put:
+      summary: 一括登録/上書き
+      deprecated: false
+      description: ""
+      tags:
+        - private/sensor
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/Sensor"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+                x-apidog-orders: []
+                x-apidog-ignore-properties: []
+          headers: {}
+          x-apidog-name: 成功
+      security:
+        - bearer: []
+      x-apidog-folder: private/sensor
+      x-apidog-status: designing
+      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10022287-run"
     delete:
       summary: 一括削除
       deprecated: false
@@ -440,38 +471,6 @@ paths:
       x-apidog-folder: private/sensor
       x-apidog-status: designing
       x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10022288-run"
-  /api/sersors:
-    put:
-      summary: 一括登録/上書き
-      deprecated: false
-      description: ""
-      tags:
-        - private/sensor
-      parameters: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: "#/components/schemas/Sensor"
-      responses:
-        "200":
-          description: ""
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: {}
-                x-apidog-orders: []
-                x-apidog-ignore-properties: []
-          headers: {}
-          x-apidog-name: 成功
-      security:
-        - bearer: []
-      x-apidog-folder: private/sensor
-      x-apidog-status: designing
-      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10022287-run"
 components:
   schemas:
     RiverNode:
