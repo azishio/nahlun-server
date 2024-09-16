@@ -740,14 +740,20 @@ components:
           type: integer
           minimum: 0.0
           format: int32
+        scope:
+          type: number
+          format: float
+          minimum: 0.0
       x-apidog-orders:
         - id
         - coord
         - interval
+        - scope
       required:
         - id
         - coord
         - interval
+        - scope
       x-apidog-ignore-properties: []
       x-apidog-folder: ""
     Coord3D:
