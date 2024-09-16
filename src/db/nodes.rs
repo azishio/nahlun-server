@@ -1,4 +1,5 @@
 use neo4rs::{Labels, Point2D};
+use openapi::models::Coord3D;
 use serde::Deserialize;
 use uuid::Uuid;
 
@@ -11,6 +12,20 @@ pub struct RiverNode {
     pub location: Point2D,
     pub hilbert18: u32,
     pub altitude: f32,
+}
+
+impl From<RiverNode> for openapi::models::RiverNode {
+    fn from(node: RiverNode) -> openapi::models::RiverNode {
+        let coord = Coord3D {
+            longitude: node.location.x(),
+            latitude: node.location.y(),
+            altitude: node.altitude,
+        };
+        openapi::models::RiverNode {
+            id: node.hilbert18 as i64,
+            coord,
+        }
+    }
 }
 
 /// 水位計を表すノード
