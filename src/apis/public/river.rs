@@ -5,9 +5,7 @@ use neo4rs::query;
 use openapi::apis::public_river::{
     ApiRiverNodesBulkGetResponse, ApiRiverNodesGetResponse, PublicRiver,
 };
-use openapi::models::{
-    ApiRiverNodesBulkGetQueryParams, ApiRiverNodesGetQueryParams,
-};
+use openapi::models::{ApiRiverNodesBulkGetQueryParams, ApiRiverNodesGetQueryParams};
 
 use crate::apis::ServerImpl;
 use crate::db;
@@ -15,9 +13,9 @@ use crate::db;
 impl PublicRiver for ServerImpl {
     async fn api_river_nodes_bulk_get(
         &self,
-        method: Method,
-        host: Host,
-        cookies: CookieJar,
+        _method: Method,
+        _host: Host,
+        _cookies: CookieJar,
         query_params: ApiRiverNodesBulkGetQueryParams,
     ) -> Result<ApiRiverNodesBulkGetResponse, String> {
         let ApiRiverNodesBulkGetQueryParams {
@@ -63,9 +61,9 @@ impl PublicRiver for ServerImpl {
 
     async fn api_river_nodes_get(
         &self,
-        method: Method,
-        host: Host,
-        cookies: CookieJar,
+        _method: Method,
+        _host: Host,
+        _cookies: CookieJar,
         query_params: ApiRiverNodesGetQueryParams,
     ) -> Result<ApiRiverNodesGetResponse, String> {
         let ApiRiverNodesGetQueryParams { id, relation_limit } = query_params;
@@ -82,7 +80,10 @@ impl PublicRiver for ServerImpl {
 
                 RETURN currentPath as path
                 "#,
-        );
+        ).params([
+            ("id", id),
+            ("relation_limit", relation_limit.unwrap_or(0) as i64),
+        ]);
 
         let mut result = self.graph.execute(query).await.unwrap();
 
