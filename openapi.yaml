@@ -1,7 +1,8 @@
+---
 openapi: 3.0.1
 info:
   title: nahlun-server
-  description: ''
+  description: ""
   version: 1.0.0
 tags:
   - name: tile
@@ -13,45 +14,43 @@ tags:
   - name: private/sensor
   - name: private/voxel_model
 paths:
-  /tiles/water/{z}/{x}/{y}:
+  "/tiles/water/{z}/{x}/{y}":
     get:
       summary: 水面タイル
       deprecated: false
-      description: |-
-        deck.glのTerrainLayerに喰わせる。
-        水面を表現した標高画像タイルを返す
+      description: "deck.glのTerrainLayerに喰わせる。\n水面を表現した標高画像タイルを返す"
       tags:
         - tile
       parameters:
         - name: z
           in: path
-          description: ''
+          description: ""
           required: true
           schema:
             type: integer
             format: int64
-            minimum: 0
+            minimum: 0.0
         - name: x
           in: path
-          description: ''
+          description: ""
           required: true
           schema:
             type: integer
             format: int64
-            minimum: 0
-        - name: 'y'
+            minimum: 0.0
+        - name: y
           in: path
-          description: ''
+          description: ""
           required: true
           schema:
             type: integer
             format: int64
-            minimum: 0
+            minimum: 0.0
       responses:
-        '200':
-          description: ''
+        "200":
+          description: ""
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: object
                 properties: {}
@@ -62,8 +61,8 @@ paths:
       security: []
       x-apidog-folder: tile
       x-apidog-status: designing
-      x-run-in-apidog: https://app.apidog.com/web/project/663078/apis/api-10004446-run
-  /tiles/land/{z}/{x}/{y}:
+      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10004446-run"
+  "/tiles/land/{z}/{x}/{y}":
     get:
       summary: 陸域タイル
       deprecated: false
@@ -73,33 +72,33 @@ paths:
       parameters:
         - name: z
           in: path
-          description: ''
+          description: ""
           required: true
           schema:
             type: integer
             format: int64
-            minimum: 0
+            minimum: 0.0
         - name: x
           in: path
-          description: ''
+          description: ""
           required: true
           schema:
             type: integer
             format: int64
-            minimum: 0
-        - name: 'y'
+            minimum: 0.0
+        - name: y
           in: path
-          description: ''
+          description: ""
           required: true
           schema:
             type: integer
             format: int64
-            minimum: 0
+            minimum: 0.0
       responses:
-        '200':
-          description: ''
+        "200":
+          description: ""
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
@@ -112,12 +111,12 @@ paths:
       security: []
       x-apidog-folder: tile
       x-apidog-status: designing
-      x-run-in-apidog: https://app.apidog.com/web/project/663078/apis/api-10004449-run
+      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10004449-run"
   /api/river-nodes:
     get:
       summary: ノード情報の取得
       deprecated: false
-      description: ''
+      description: ""
       tags:
         - public/river
       parameters:
@@ -137,145 +136,135 @@ paths:
             default: 0
             format: int32
       responses:
-        '200':
-          description: ''
+        "200":
+          description: ""
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  node: &ref_0
-                    $ref: '#/components/schemas/RiverNode'
-                  link:
-                    type: array
-                    items:
-                      type: array
-                      items: *ref_0
-                      description: '`node`を始点としたRiverNodeのつながり'
-                    description: 各方向の`node`を始点としたRiverNodeのつながり
-                x-apidog-orders:
-                  - node
-                  - link
-                required:
-                  - node
-                  - link
-                x-apidog-ignore-properties: []
+                type: array
+                items:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/RiverNode"
+                  description: 指定したidから始まるパス
+                description: パスの配列
           headers: {}
           x-apidog-name: 成功
       security: []
       x-apidog-folder: public/river
       x-apidog-status: designing
-      x-run-in-apidog: https://app.apidog.com/web/project/663078/apis/api-10013003-run
+      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10013003-run"
   /api/river-nodes/bulk:
     get:
       summary: 範囲内のノードの情報を読む
       deprecated: false
-      description: ''
+      description: ""
       tags:
         - public/river
       parameters:
         - name: max-longitude
           in: query
-          description: ''
+          description: ""
           required: true
           schema:
             type: number
             format: double
-            minimum: -180
-            maximum: 180
+            minimum: -180.0
+            maximum: 180.0
         - name: min-longitude
           in: query
-          description: ''
+          description: ""
           required: true
           schema:
             type: number
             format: double
-            minimum: -180
-            maximum: 180
+            minimum: -180.0
+            maximum: 180.0
         - name: max-latitude
           in: query
-          description: ''
+          description: ""
           required: true
           schema:
             type: number
             format: double
-            minimum: -90
-            maximum: 90
+            minimum: -90.0
+            maximum: 90.0
         - name: min-latitude
           in: query
-          description: ''
+          description: ""
           required: true
           schema:
             type: number
             format: double
-            minimum: -90
-            maximum: 90
+            minimum: -90.0
+            maximum: 90.0
       responses:
-        '200':
-          description: ''
+        "200":
+          description: ""
           content:
             application/json:
               schema:
                 type: array
-                items: *ref_0
+                items:
+                  $ref: "#/components/schemas/RiverNode"
                 description: RiverNodeのつながりの集合
           headers: {}
           x-apidog-name: 成功
       security: []
       x-apidog-folder: public/river
       x-apidog-status: designing
-      x-run-in-apidog: https://app.apidog.com/web/project/663078/apis/api-10022275-run
+      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10022275-run"
   /api/voxel-models/bulk:
     get:
       summary: 範囲内のモデルの情報を読む
       deprecated: false
-      description: ''
+      description: ""
       tags:
         - public/voxel_model
       parameters:
         - name: max-longitude
           in: query
-          description: ''
+          description: ""
           required: true
           schema:
             type: number
             format: double
         - name: min-longitude
           in: query
-          description: ''
+          description: ""
           required: true
           schema:
             type: number
             format: double
         - name: max-latitude
           in: query
-          description: ''
+          description: ""
           required: true
           schema:
             type: number
             format: double
         - name: min-latitude
           in: query
-          description: ''
+          description: ""
           required: true
           schema:
             type: number
             format: double
       responses:
-        '200':
-          description: ''
+        "200":
+          description: ""
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/VoxelModel'
+                  $ref: "#/components/schemas/VoxelModel"
           headers: {}
           x-apidog-name: 成功
       security: []
       x-apidog-folder: public/voxel_model
       x-apidog-status: designing
-      x-run-in-apidog: https://app.apidog.com/web/project/663078/apis/api-10006499-run
+      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10006499-run"
   /api/voxel-models:
     get:
       summary: モデルの取得
@@ -286,16 +275,16 @@ paths:
       parameters:
         - name: id
           in: query
-          description: ''
+          description: ""
           required: true
           schema:
             type: string
             format: uuid
       responses:
-        '200':
-          description: ''
+        "200":
+          description: ""
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: object
                 properties: {}
@@ -306,26 +295,26 @@ paths:
       security: []
       x-apidog-folder: public/voxel_model
       x-apidog-status: designing
-      x-run-in-apidog: https://app.apidog.com/web/project/663078/apis/api-10022261-run
+      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10022261-run"
     put:
       summary: モデルの登録/上書き
       deprecated: false
-      description: ''
+      description: ""
       tags:
         - private/voxel_model
       parameters:
         - name: id
           in: query
-          description: ''
+          description: ""
           required: true
           schema:
             type: string
             format: uuid
       responses:
-        '200':
-          description: ''
+        "200":
+          description: ""
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: object
                 properties: {}
@@ -337,11 +326,11 @@ paths:
         - bearer: []
       x-apidog-folder: private/voxel_model
       x-apidog-status: designing
-      x-run-in-apidog: https://app.apidog.com/web/project/663078/apis/api-10022291-run
+      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10022291-run"
     delete:
       summary: モデルの削除
       deprecated: false
-      description: ''
+      description: ""
       tags:
         - private/voxel_model
       parameters:
@@ -353,8 +342,8 @@ paths:
             type: string
             format: uuid
       responses:
-        '200':
-          description: ''
+        "200":
+          description: ""
           content:
             application/json:
               schema:
@@ -368,12 +357,12 @@ paths:
         - bearer: []
       x-apidog-folder: private/voxel_model
       x-apidog-status: designing
-      x-run-in-apidog: https://app.apidog.com/web/project/663078/apis/api-10022292-run
+      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10022292-run"
   /api/sensors:
     get:
       summary: 現在の情報を取得
       deprecated: false
-      description: ''
+      description: ""
       tags:
         - public/sensor
       parameters:
@@ -393,21 +382,21 @@ paths:
             default: 1
             format: int32
       responses:
-        '200':
-          description: ''
+        "200":
+          description: ""
           content:
             application/json:
               schema:
                 type: object
                 properties:
                   sensor:
-                    $ref: '#/components/schemas/Sensor'
+                    $ref: "#/components/schemas/Sensor"
                   data:
                     type: array
                     items:
                       type: array
                       items:
-                        $ref: '#/components/schemas/SensorData'
+                        $ref: "#/components/schemas/SensorData"
                 x-apidog-orders:
                   - sensor
                   - data
@@ -420,7 +409,7 @@ paths:
       security: []
       x-apidog-folder: public/sensor
       x-apidog-status: designing
-      x-run-in-apidog: https://app.apidog.com/web/project/663078/apis/api-10004197-run
+      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10004197-run"
     put:
       summary: センサーを登録/上書き
       deprecated: false
@@ -438,20 +427,20 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: &ref_1
+            schema:
               properties:
                 coord:
-                  $ref: '#/definitions/3321047'
+                  $ref: "#/definitions/3321047"
                 interval:
                   type: integer
                   format: uint32
               x-apidog-orders:
                 - coord
                 - interval
-              $ref: '#/components/schemas/SensorRegistration'
+              $ref: "#/components/schemas/SensorRegistration"
       responses:
-        '200':
-          description: ''
+        "200":
+          description: ""
           content:
             application/json:
               schema:
@@ -465,11 +454,11 @@ paths:
         - bearer: []
       x-apidog-folder: private/sensor
       x-apidog-status: designing
-      x-run-in-apidog: https://app.apidog.com/web/project/663078/apis/api-10022285-run
+      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10022285-run"
     delete:
       summary: センサーを削除
       deprecated: false
-      description: ''
+      description: ""
       tags:
         - private/sensor
       parameters:
@@ -481,8 +470,8 @@ paths:
             type: string
             format: uuid
       responses:
-        '200':
-          description: ''
+        "200":
+          description: ""
           content:
             application/json:
               schema:
@@ -496,18 +485,18 @@ paths:
         - bearer: []
       x-apidog-folder: private/sensor
       x-apidog-status: designing
-      x-run-in-apidog: https://app.apidog.com/web/project/663078/apis/api-10022286-run
+      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10022286-run"
   /api/sersors/bulk:
     put:
       summary: 一括登録/上書き
       deprecated: false
-      description: ''
+      description: ""
       tags:
         - private/sensor
       parameters: []
       responses:
-        '200':
-          description: ''
+        "200":
+          description: ""
           content:
             application/json:
               schema:
@@ -515,11 +504,12 @@ paths:
                 items:
                   type: object
                   properties:
-                    coord: &ref_2
-                      $ref: '#/components/schemas/Coord3D'
+                    coord:
+                      $ref: "#/components/schemas/Coord3D"
                     interval:
                       type: integer
                       format: int64
+                      minimum: 0.0
                     id:
                       type: string
                       format: uuid
@@ -529,7 +519,17 @@ paths:
                   required:
                     - id
                   x-apidog-refs:
-                    01J7PYTWB7WH7Q5Y839F5BYPSD: *ref_1
+                    01J7PYTWB7WH7Q5Y839F5BYPSD:
+                      properties:
+                        coord:
+                          $ref: "#/definitions/3321047"
+                        interval:
+                          type: integer
+                          format: uint32
+                      x-apidog-orders:
+                        - coord
+                        - interval
+                      $ref: "#/components/schemas/SensorRegistration"
                   x-apidog-ignore-properties:
                     - coord
                     - interval
@@ -539,18 +539,18 @@ paths:
         - bearer: []
       x-apidog-folder: private/sensor
       x-apidog-status: designing
-      x-run-in-apidog: https://app.apidog.com/web/project/663078/apis/api-10022287-run
+      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10022287-run"
   /api/sensors/bulk:
     delete:
       summary: 一括削除
       deprecated: false
-      description: ''
+      description: ""
       tags:
         - private/sensor
       parameters: []
       responses:
-        '200':
-          description: ''
+        "200":
+          description: ""
           content:
             application/json:
               schema:
@@ -564,7 +564,7 @@ paths:
         - bearer: []
       x-apidog-folder: private/sensor
       x-apidog-status: designing
-      x-run-in-apidog: https://app.apidog.com/web/project/663078/apis/api-10022288-run
+      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10022288-run"
 components:
   schemas:
     RiverNode:
@@ -574,7 +574,8 @@ components:
           type: integer
           description: ZoomLv18でのヒルベルト値
           format: int64
-        coord: *ref_2
+        coord:
+          $ref: "#/components/schemas/Coord3D"
       x-apidog-orders:
         - id
         - coord
@@ -582,21 +583,21 @@ components:
         - id
         - coord
       x-apidog-ignore-properties: []
-      x-apidog-folder: ''
+      x-apidog-folder: ""
     SensorData:
       type: object
       properties:
         distance:
           type: number
-          description: 測定値から平均処理をした値（水位ではない） [cm]
+          description: "測定値から平均処理をした値（水位ではない） [cm]"
           format: float
         battery_voltage:
           type: number
-          description: 電池電圧の測定値 [mv]
+          description: "電池電圧の測定値 [mv]"
           format: float
         previous_sleep_time:
           type: integer
-          description: 前回測定からのインターバル [分]
+          description: "前回測定からのインターバル [分]"
           format: int64
         datetime:
           type: integer
@@ -613,7 +614,7 @@ components:
         - previous_sleep_time
         - datetime
       x-apidog-ignore-properties: []
-      x-apidog-folder: ''
+      x-apidog-folder: ""
     NetworkStatus:
       type: object
       properties:
@@ -680,7 +681,7 @@ components:
         - RSSI
         - RSSNR
       x-apidog-ignore-properties: []
-      x-apidog-folder: ''
+      x-apidog-folder: ""
     VoxelModel:
       type: object
       properties:
@@ -690,7 +691,7 @@ components:
           type: string
           format: uuid
         aabb:
-          $ref: '#/components/schemas/LLAABB'
+          $ref: "#/components/schemas/LLAABB"
       x-apidog-orders:
         - name
         - id
@@ -700,7 +701,7 @@ components:
         - id
         - aabb
       x-apidog-ignore-properties: []
-      x-apidog-folder: ''
+      x-apidog-folder: ""
     LLAABB:
       type: object
       properties:
@@ -727,7 +728,7 @@ components:
         - left
         - right
       x-apidog-ignore-properties: []
-      x-apidog-folder: ''
+      x-apidog-folder: ""
     Sensor:
       type: object
       properties:
@@ -735,7 +736,8 @@ components:
           type: string
           description: ID番号
           format: uuid
-        coord: *ref_2
+        coord:
+          $ref: "#/components/schemas/Coord3D"
       x-apidog-orders:
         - id
         - coord
@@ -743,20 +745,20 @@ components:
         - id
         - coord
       x-apidog-ignore-properties: []
-      x-apidog-folder: ''
+      x-apidog-folder: ""
     Coord3D:
       type: object
       properties:
         longitude:
           type: number
           format: double
-          minimum: -180
-          maximum: 180
+          minimum: -180.0
+          maximum: 180.0
         latitude:
           type: number
           format: double
-          minimum: -90
-          maximum: 90
+          minimum: -90.0
+          maximum: 90.0
         altitude:
           type: number
           format: float
@@ -769,19 +771,21 @@ components:
         - latitude
         - altitude
       x-apidog-ignore-properties: []
-      x-apidog-folder: ''
+      x-apidog-folder: ""
     SensorRegistration:
       type: object
       properties:
-        coord: *ref_2
+        coord:
+          $ref: "#/components/schemas/Coord3D"
         interval:
           type: integer
           format: int64
+          minimum: 0.0
       x-apidog-orders:
         - coord
         - interval
       x-apidog-ignore-properties: []
-      x-apidog-folder: ''
+      x-apidog-folder: ""
   securitySchemes:
     bearer:
       type: http
