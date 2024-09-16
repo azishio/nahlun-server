@@ -3,51 +3,32 @@ use axum::extract::Host;
 use axum::http::Method;
 use axum_extra::extract::CookieJar;
 use openapi::apis::private_sensor::{
-    ApiSensorsBulkDeleteResponse, ApiSensorsDeleteResponse, ApiSensorsPutResponse,
-    ApiSersorsBulkPutResponse, PrivateSensor,
+    ApiSensorsDeleteResponse, ApiSersorsPutResponse, PrivateSensor,
 };
-use openapi::models::{ApiSensorsDeleteQueryParams, ApiSensorsPutQueryParams, SensorRegistration};
+use openapi::models::Sensor;
+use uuid::Uuid;
 
 use crate::apis::ServerImpl;
 
 #[async_trait]
 impl PrivateSensor for ServerImpl {
-    async fn api_sensors_bulk_delete(
-        &self,
-        method: Method,
-        host: Host,
-        cookies: CookieJar,
-    ) -> Result<ApiSensorsBulkDeleteResponse, String> {
-        todo!()
-    }
-
     async fn api_sensors_delete(
         &self,
-        method: Method,
-        host: Host,
-        cookies: CookieJar,
-        query_params: ApiSensorsDeleteQueryParams,
+        _method: Method,
+        _host: Host,
+        _cookies: CookieJar,
+        body: Option<Vec<Uuid>>,
     ) -> Result<ApiSensorsDeleteResponse, String> {
         todo!()
     }
 
-    async fn api_sensors_put(
+    async fn api_sersors_put(
         &self,
-        method: Method,
-        host: Host,
-        cookies: CookieJar,
-        query_params: ApiSensorsPutQueryParams,
-        body: Option<SensorRegistration>,
-    ) -> Result<ApiSensorsPutResponse, String> {
-        todo!()
-    }
-
-    async fn api_sersors_bulk_put(
-        &self,
-        method: Method,
-        host: Host,
-        cookies: CookieJar,
-    ) -> Result<ApiSersorsBulkPutResponse, String> {
+        _method: Method,
+        _host: Host,
+        _cookies: CookieJar,
+        body: Option<Vec<Sensor>>,
+    ) -> Result<ApiSersorsPutResponse, String> {
         todo!()
     }
 }
