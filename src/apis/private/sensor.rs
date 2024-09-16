@@ -5,8 +5,9 @@ use axum_extra::extract::CookieJar;
 use openapi::apis::private_sensor::{
     ApiSensorsDeleteResponse, ApiSensorsPutResponse, PrivateSensor,
 };
-use openapi::models::Sensor;
-use uuid::Uuid;
+use openapi::models::{
+    ApiSensorsDeleteQueryParams, ApiSensorsPutQueryParams, ApiSensorsPutRequest,
+};
 
 use crate::apis::ServerImpl;
 
@@ -17,7 +18,7 @@ impl PrivateSensor for ServerImpl {
         _method: Method,
         _host: Host,
         _cookies: CookieJar,
-        body: Option<Vec<Uuid>>,
+        query_params: ApiSensorsDeleteQueryParams,
     ) -> Result<ApiSensorsDeleteResponse, String> {
         todo!()
     }
@@ -27,7 +28,8 @@ impl PrivateSensor for ServerImpl {
         _method: Method,
         _host: Host,
         _cookies: CookieJar,
-        body: Option<Vec<Sensor>>,
+        query_params: ApiSensorsPutQueryParams,
+        body: Option<ApiSensorsPutRequest>,
     ) -> Result<ApiSensorsPutResponse, String> {
         todo!()
     }

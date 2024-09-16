@@ -33,7 +33,6 @@ impl From<RiverNode> for openapi::models::RiverNode {
 #[derive(Deserialize)]
 pub struct Sensor {
     pub id: Uuid,
-    pub location: Point2D,
     pub altitude: f32,
     pub interval: u32,
     pub scope: f32,
@@ -43,20 +42,14 @@ impl From<Sensor> for openapi::models::Sensor {
     fn from(sensor: Sensor) -> openapi::models::Sensor {
         let Sensor {
             id,
-            location,
             altitude,
             interval,
             scope,
             ..
         } = sensor;
-        let coord = Coord3D {
-            longitude: location.x(),
-            latitude: location.y(),
-            altitude,
-        };
         openapi::models::Sensor {
             id,
-            coord,
+            altitude,
             interval,
             scope,
         }
