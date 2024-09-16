@@ -39,6 +39,28 @@ pub struct Sensor {
     pub interval: u32,
 }
 
+impl From<Sensor> for openapi::models::Sensor {
+    fn from(sensor: Sensor) -> openapi::models::Sensor {
+        let Sensor {
+            id,
+            location,
+            altitude,
+            interval,
+            ..
+        } = sensor;
+        let coord = Coord3D {
+            longitude: location.x(),
+            latitude: location.y(),
+            altitude,
+        };
+        openapi::models::Sensor {
+            id,
+            coord,
+            interval,
+        }
+    }
+}
+
 /// 水位計のデータ
 /// Sensorに対して:CURRENT_DATAラベルのリレーションシップで結ぶことで、水位計のデータを指定する
 /// SensorData同士を:PREVIOUS_DATAラベルのリレーションシップで結ぶことで、データの時間軸を表現する
@@ -52,6 +74,24 @@ pub struct SensorData {
     pub previous_sleep_time: u32,
     /// 平均処理されたセンサーの値
     pub value: f32,
+}
+
+impl From<SensorData> for openapi::models::SensorData {
+    fn from(data: SensorData) -> openapi::models::SensorData {
+        let SensorData {
+            value,
+            previous_sleep_time,
+            battery_voltage,
+            unix_time,
+        } = data;
+
+        openapi::models::SensorData {
+            value,
+            previous_sleep_time: previous_sleep_time as i64,
+            battery_voltage,
+            unix_time: unix_time as i64,
+        }
+    }
 }
 
 /// カスタムボクセルタイルのソースを表す
