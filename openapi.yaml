@@ -408,137 +408,6 @@ paths:
       x-apidog-folder: public/sensor
       x-apidog-status: designing
       x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10004197-run"
-    put:
-      summary: センサーを登録/上書き
-      deprecated: false
-      description: センサー情報を更新する。初回はすべてのリクエストボディが必須プロパティ
-      tags:
-        - private/sensor
-      parameters:
-        - name: id
-          in: query
-          description: ID番号
-          required: true
-          schema:
-            type: integer
-            format: ulong
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                coord:
-                  $ref: "#/definitions/3321047"
-                interval:
-                  type: integer
-                  format: uint32
-              x-apidog-orders:
-                - coord
-                - interval
-              $ref: "#/components/schemas/SensorRegistration"
-      responses:
-        "200":
-          description: ""
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: {}
-                x-apidog-ignore-properties: []
-                x-apidog-orders: []
-          headers: {}
-          x-apidog-name: 成功
-      security:
-        - bearer: []
-      x-apidog-folder: private/sensor
-      x-apidog-status: designing
-      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10022285-run"
-    delete:
-      summary: センサーを削除
-      deprecated: false
-      description: ""
-      tags:
-        - private/sensor
-      parameters:
-        - name: id
-          in: query
-          description: ID番号
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        "200":
-          description: ""
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: {}
-                x-apidog-ignore-properties: []
-                x-apidog-orders: []
-          headers: {}
-          x-apidog-name: 成功
-      security:
-        - bearer: []
-      x-apidog-folder: private/sensor
-      x-apidog-status: designing
-      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10022286-run"
-  /api/sersors/bulk:
-    put:
-      summary: 一括登録/上書き
-      deprecated: false
-      description: ""
-      tags:
-        - private/sensor
-      parameters: []
-      responses:
-        "200":
-          description: ""
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    coord:
-                      $ref: "#/components/schemas/Coord3D"
-                    interval:
-                      type: integer
-                      format: int64
-                      minimum: 0.0
-                    id:
-                      type: string
-                      format: uuid
-                  x-apidog-orders:
-                    - 01J7PYTWB7WH7Q5Y839F5BYPSD
-                    - id
-                  required:
-                    - id
-                  x-apidog-refs:
-                    01J7PYTWB7WH7Q5Y839F5BYPSD:
-                      properties:
-                        coord:
-                          $ref: "#/definitions/3321047"
-                        interval:
-                          type: integer
-                          format: uint32
-                      x-apidog-orders:
-                        - coord
-                        - interval
-                      $ref: "#/components/schemas/SensorRegistration"
-                  x-apidog-ignore-properties:
-                    - coord
-                    - interval
-          headers: {}
-          x-apidog-name: 成功
-      security:
-        - bearer: []
-      x-apidog-folder: private/sensor
-      x-apidog-status: designing
-      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10022287-run"
-  /api/sensors/bulk:
     delete:
       summary: 一括削除
       deprecated: false
@@ -546,6 +415,14 @@ paths:
       tags:
         - private/sensor
       parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+                format: uuid
       responses:
         "200":
           description: ""
@@ -563,6 +440,38 @@ paths:
       x-apidog-folder: private/sensor
       x-apidog-status: designing
       x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10022288-run"
+  /api/sersors:
+    put:
+      summary: 一括登録/上書き
+      deprecated: false
+      description: ""
+      tags:
+        - private/sensor
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/Sensor"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+                x-apidog-orders: []
+                x-apidog-ignore-properties: []
+          headers: {}
+          x-apidog-name: 成功
+      security:
+        - bearer: []
+      x-apidog-folder: private/sensor
+      x-apidog-status: designing
+      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10022287-run"
 components:
   schemas:
     RiverNode:
@@ -780,20 +689,6 @@ components:
         - longitude
         - latitude
         - altitude
-      x-apidog-ignore-properties: []
-      x-apidog-folder: ""
-    SensorRegistration:
-      type: object
-      properties:
-        coord:
-          $ref: "#/components/schemas/Coord3D"
-        interval:
-          type: integer
-          format: int64
-          minimum: 0.0
-      x-apidog-orders:
-        - coord
-        - interval
       x-apidog-ignore-properties: []
       x-apidog-folder: ""
   securitySchemes:
