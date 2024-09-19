@@ -18,6 +18,9 @@ anyhow = "1.0.88"
 futures = "0.3.30"
 strum = { version = "0.26.3", features = ["derive"] }
 envy = "0.4.2"
+reqwest = "0.12.7"
+voxel-tiler-core = { version = "0.3.2", features = ["image"] }
+coordinate-transformer = "1.7.0"
 
 [build-dependencies]
 yaml-rust = "0.4"
