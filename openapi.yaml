@@ -1,16 +1,16 @@
 ---
 openapi: 3.0.1
+x-stoplight:
+  id: f20zn19mdoelb
 info:
   title: nahlun-server
   description: ""
   version: 1.0.0
 tags:
   - name: tile
-  - name: public
   - name: public/river
   - name: public/voxel_model
   - name: public/sensor
-  - name: private
   - name: private/sensor
   - name: private/voxel_model
 paths:
@@ -50,18 +50,18 @@ paths:
         "200":
           description: ""
           content:
-            "*/*":
+            application/x-tar:
               schema:
-                type: object
-                properties: {}
-                x-apidog-ignore-properties: []
-                x-apidog-orders: []
-          headers: {}
-          x-apidog-name: 成功
+                type: string
+                format: binary
+          headers:
+            Content-Encoding:
+              schema:
+                type: string
+                default: zstd
+              description: zstd
       security: []
-      x-apidog-folder: tile
-      x-apidog-status: designing
-      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10004446-run"
+      operationId: ""
   "/tiles/land/{z}/{x}/{y}":
     get:
       summary: 陸域タイル
@@ -98,20 +98,17 @@ paths:
         "200":
           description: ""
           content:
-            "*/*":
+            application/x-tar:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties: {}
-                  x-apidog-orders: []
-                  x-apidog-ignore-properties: []
-          headers: {}
-          x-apidog-name: 成功
+                type: string
+                format: binary
+          headers:
+            Content-Encoding:
+              schema:
+                type: string
+                default: zstd
+              description: zstd
       security: []
-      x-apidog-folder: tile
-      x-apidog-status: designing
-      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10004449-run"
   /api/river-nodes:
     get:
       summary: ノード情報の取得
@@ -149,11 +146,7 @@ paths:
                   description: 指定したidから始まるパス
                 description: パスの配列
           headers: {}
-          x-apidog-name: 成功
       security: []
-      x-apidog-folder: public/river
-      x-apidog-status: designing
-      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10013003-run"
   /api/river-nodes/bulk:
     get:
       summary: 範囲内のノードの情報を読む
@@ -209,11 +202,7 @@ paths:
                   $ref: "#/components/schemas/RiverNode"
                 description: RiverNodeのつながりの集合
           headers: {}
-          x-apidog-name: 成功
       security: []
-      x-apidog-folder: public/river
-      x-apidog-status: designing
-      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10022275-run"
   /api/voxel-models/bulk:
     get:
       summary: 範囲内のモデルの情報を読む
@@ -260,11 +249,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/VoxelModel"
           headers: {}
-          x-apidog-name: 成功
       security: []
-      x-apidog-folder: public/voxel_model
-      x-apidog-status: designing
-      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10006499-run"
   /api/voxel-models:
     get:
       summary: モデルの取得
@@ -284,18 +269,14 @@ paths:
         "200":
           description: ""
           content:
-            "*/*":
+            application/json:
               schema:
-                type: object
-                properties: {}
-                x-apidog-ignore-properties: []
-                x-apidog-orders: []
+                $ref: "#/components/schemas/VoxelModel"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/VoxelModel"
           headers: {}
-          x-apidog-name: 成功
       security: []
-      x-apidog-folder: public/voxel_model
-      x-apidog-status: designing
-      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10022261-run"
     put:
       summary: モデルの登録/上書き
       deprecated: false
@@ -310,23 +291,19 @@ paths:
           schema:
             type: string
             format: uuid
+      requestBody:
+        content:
+          application/x-tar:
+            schema:
+              type: string
+              format: binary
       responses:
         "200":
           description: ""
-          content:
-            "*/*":
-              schema:
-                type: object
-                properties: {}
-                x-apidog-ignore-properties: []
-                x-apidog-orders: []
+          content: {}
           headers: {}
-          x-apidog-name: 成功
       security:
         - bearer: []
-      x-apidog-folder: private/voxel_model
-      x-apidog-status: designing
-      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10022291-run"
     delete:
       summary: モデルの削除
       deprecated: false
@@ -344,20 +321,10 @@ paths:
       responses:
         "200":
           description: ""
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: {}
-                x-apidog-ignore-properties: []
-                x-apidog-orders: []
+          content: {}
           headers: {}
-          x-apidog-name: 成功
       security:
         - bearer: []
-      x-apidog-folder: private/voxel_model
-      x-apidog-status: designing
-      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10022292-run"
   /api/sensors:
     get:
       summary: 現在の情報を取得
@@ -395,19 +362,11 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/SensorData"
-                x-apidog-orders:
-                  - sensor
-                  - data
                 required:
                   - sensor
                   - data
-                x-apidog-ignore-properties: []
           headers: {}
-          x-apidog-name: 成功
       security: []
-      x-apidog-folder: public/sensor
-      x-apidog-status: designing
-      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10004197-run"
     put:
       summary: 登録/上書き
       deprecated: false
@@ -439,31 +398,17 @@ paths:
                   type: number
                   format: float
                   minimum: 0.0
-              x-apidog-refs: {}
-              x-apidog-orders:
-                - altitude
-                - interval
-                - scope
               required:
                 - altitude
                 - interval
                 - scope
-              x-apidog-ignore-properties: []
       responses:
         "200":
           description: ""
-          content:
-            application/json:
-              schema:
-                type: string
-                format: uuid
+          content: {}
           headers: {}
-          x-apidog-name: 成功
       security:
         - bearer: []
-      x-apidog-folder: private/sensor
-      x-apidog-status: designing
-      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10022287-run"
     delete:
       summary: 削除
       deprecated: false
@@ -481,18 +426,10 @@ paths:
       responses:
         "200":
           description: ""
-          content:
-            application/json:
-              schema:
-                type: string
-                format: uuid
+          content: {}
           headers: {}
-          x-apidog-name: 成功
       security:
         - bearer: []
-      x-apidog-folder: private/sensor
-      x-apidog-status: designing
-      x-run-in-apidog: "https://app.apidog.com/web/project/663078/apis/api-10022288-run"
 components:
   schemas:
     RiverNode:
@@ -504,14 +441,11 @@ components:
           format: int64
         coord:
           $ref: "#/components/schemas/Coord3D"
-      x-apidog-orders:
-        - id
-        - coord
       required:
         - id
         - coord
-      x-apidog-ignore-properties: []
-      x-apidog-folder: ""
+      x-stoplight:
+        id: w9z7wefbb1e4s
     SensorData:
       type: object
       properties:
@@ -531,18 +465,13 @@ components:
           type: integer
           description: UNIX時間
           format: int64
-      x-apidog-orders:
-        - value
-        - battery_voltage
-        - previous_sleep_time
-        - unix_time
       required:
         - value
         - battery_voltage
         - previous_sleep_time
         - unix_time
-      x-apidog-ignore-properties: []
-      x-apidog-folder: ""
+      x-stoplight:
+        id: afyy6fccbzi1e
     NetworkStatus:
       type: object
       properties:
@@ -576,22 +505,6 @@ components:
           type: string
         RSSNR:
           type: string
-      x-apidog-orders:
-        - system_mode
-        - operation_mode
-        - MCC
-        - MNC
-        - TAC
-        - SCelllD
-        - PCelllD
-        - frequency_band
-        - earfcn
-        - dlbw
-        - ulbw
-        - RSRQ
-        - RSRP
-        - RSSI
-        - RSSNR
       required:
         - system_mode
         - operation_mode
@@ -608,8 +521,8 @@ components:
         - RSRP
         - RSSI
         - RSSNR
-      x-apidog-ignore-properties: []
-      x-apidog-folder: ""
+      x-stoplight:
+        id: 4gusuyav00xav
     VoxelModel:
       type: object
       properties:
@@ -620,16 +533,12 @@ components:
           format: uuid
         aabb:
           $ref: "#/components/schemas/LLAABB"
-      x-apidog-orders:
-        - name
-        - id
-        - aabb
       required:
         - name
         - id
         - aabb
-      x-apidog-ignore-properties: []
-      x-apidog-folder: ""
+      x-stoplight:
+        id: 4qbru4lq3de4b
     LLAABB:
       type: object
       properties:
@@ -645,18 +554,13 @@ components:
         left:
           type: number
           format: double
-      x-apidog-orders:
-        - top
-        - bottom
-        - right
-        - left
       required:
         - top
         - bottom
         - left
         - right
-      x-apidog-ignore-properties: []
-      x-apidog-folder: ""
+      x-stoplight:
+        id: iheog4jz752e2
     Sensor:
       type: object
       properties:
@@ -675,18 +579,13 @@ components:
           type: number
           format: float
           minimum: 0.0
-      x-apidog-orders:
-        - id
-        - altitude
-        - interval
-        - scope
       required:
         - id
         - altitude
         - interval
         - scope
-      x-apidog-ignore-properties: []
-      x-apidog-folder: ""
+      x-stoplight:
+        id: nd3wecxg0v70x
     Coord3D:
       type: object
       properties:
@@ -703,16 +602,12 @@ components:
         altitude:
           type: number
           format: float
-      x-apidog-orders:
-        - longitude
-        - latitude
-        - altitude
       required:
         - longitude
         - latitude
         - altitude
-      x-apidog-ignore-properties: []
-      x-apidog-folder: ""
+      x-stoplight:
+        id: ao189ha62cmjt
   securitySchemes:
     bearer:
       type: http
