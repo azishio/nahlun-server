@@ -32,7 +32,7 @@ impl PrivateSensor for ServerImpl {
 
         let _ = self.graph.execute(query).await.unwrap();
 
-        Ok(ApiSensorsDeleteResponse::Status200(query_params.id))
+        Ok(ApiSensorsDeleteResponse::Status200)
     }
 
     async fn api_sensors_put(
@@ -71,6 +71,6 @@ impl PrivateSensor for ServerImpl {
 
         let _ = self.graph.execute(query).await.unwrap();
 
-        Ok(ApiSensorsPutResponse::Status200(query_params.id))
+        Ok(ApiSensorsPutResponse::Status200)
     }
 }
