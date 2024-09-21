@@ -1,7 +1,9 @@
+use axum::http::Method;
 use axum::serve;
 use neo4rs::{ConfigBuilder, Graph};
 use openapi::server::new;
 use tokio::net::TcpListener;
+use tower_http::cors::{AllowOrigin, CorsLayer};
 
 use crate::apis::ServerImpl;
 use crate::cache::MultiLayerCache;
@@ -40,7 +42,11 @@ async fn main() {
         env.disk_cache_base_path.into(),
     );
 
-    let router = new(ServerImpl::with_graph_and_cache(graph, cache));
+    let router = new(ServerImpl::with_graph_and_cache(graph, cache)).layer(
+        CorsLayer::new()
+            .allow_origin(AllowOrigin::exact("http://localhost:3001".parse().unwrap()))
+            .allow_methods(vec![Method::GET]),
+    );
     let listener = TcpListener::bind("localhost:3000").await.unwrap();
 
     serve(listener, router).await.unwrap();
