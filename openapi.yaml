@@ -1,7 +1,7 @@
 ---
 openapi: 3.0.1
 x-stoplight:
-  id: f20zn19mdoelb
+  id: 47dnd5m1une99
 info:
   title: nahlun-server
   description: ""
@@ -50,7 +50,7 @@ paths:
         "200":
           description: ""
           content:
-            application/x-tar:
+            model/gltf-binary:
               schema:
                 type: string
                 format: binary
@@ -98,7 +98,7 @@ paths:
         "200":
           description: ""
           content:
-            application/x-tar:
+            model/gltf-binary:
               schema:
                 type: string
                 format: binary
@@ -445,7 +445,7 @@ components:
         - id
         - coord
       x-stoplight:
-        id: w9z7wefbb1e4s
+        id: htp0mmdzsijon
     SensorData:
       type: object
       properties:
@@ -471,7 +471,7 @@ components:
         - previous_sleep_time
         - unix_time
       x-stoplight:
-        id: afyy6fccbzi1e
+        id: uyiodx1lgboma
     NetworkStatus:
       type: object
       properties:
@@ -522,7 +522,7 @@ components:
         - RSSI
         - RSSNR
       x-stoplight:
-        id: 4gusuyav00xav
+        id: ge0xu72jpmiah
     VoxelModel:
       type: object
       properties:
@@ -538,7 +538,7 @@ components:
         - id
         - aabb
       x-stoplight:
-        id: 4qbru4lq3de4b
+        id: nw1wgiuv3uzef
     LLAABB:
       type: object
       properties:
@@ -560,7 +560,7 @@ components:
         - left
         - right
       x-stoplight:
-        id: iheog4jz752e2
+        id: wmmtg4o03w6d3
     Sensor:
       type: object
       properties:
@@ -585,7 +585,7 @@ components:
         - interval
         - scope
       x-stoplight:
-        id: nd3wecxg0v70x
+        id: l1bs5gn51jard
     Coord3D:
       type: object
       properties:
@@ -607,7 +607,7 @@ components:
         - latitude
         - altitude
       x-stoplight:
-        id: ao189ha62cmjt
+        id: er5lerujmu09s
   securitySchemes:
     bearer:
       type: http
