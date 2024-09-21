@@ -1,6 +1,7 @@
 //! パスごとに呼び出される処理を定義
 
 use neo4rs::Graph;
+use reqwest::Client;
 
 use crate::cache::MultiLayerCache;
 
@@ -13,12 +14,18 @@ mod tile;
 pub struct ServerImpl {
     graph: Graph,
     cache: MultiLayerCache,
+    http_client: Client,
 }
 
 impl ServerImpl {
     /// 新しいServerImplを作成する
     pub fn with_graph_and_cache(graph: Graph, cache: MultiLayerCache) -> Self {
-        Self { graph, cache }
+        let http_client = Client::new();
+        Self {
+            graph,
+            cache,
+            http_client,
+        }
     }
 }
 
