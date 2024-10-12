@@ -14,7 +14,7 @@ use reqwest::Client;
 use voxel_tiler_core::coordinate_transformer::ZoomLv;
 use voxel_tiler_core::giaj_terrain::{AltitudeResolutionCriteria, GIAJTerrainImageSampler};
 use voxel_tiler_core::glb::{Glb, GlbGen, Mime, TextureInfo};
-use voxel_tiler_core::image::{DynamicImage, ImageReader};
+use voxel_tiler_core::image::{DynamicImage, ImageFormat, ImageReader};
 use voxel_tiler_core::mesh::{Mesher, ValidSide};
 
 use crate::apis::ServerImpl;
@@ -44,25 +44,33 @@ impl Tile for ServerImpl {
             &format!("https://tiles.gsj.jp/tiles/elev/land/{z}/{y}/{x}.png"),
             self.http_client.clone(),
         )
-        .await
-        .map_err(|e| e.to_string())?;
+            .await
+            .map_err(|e| {
+                e.to_string()
+            })?
+            .flipv();
 
-        let photo = self
-            .http_client
-            .get(&format!(
-                "https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg"
-            ))
-            .send()
-            .await
-            .map_err(|e| e.to_string())?
-            .bytes()
-            .await
-            .map_err(|e| e.to_string())?;
+        let photo = {
+            let dimage = fetch_image(
+                &format!("https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg"),
+                self.http_client.clone(),
+            )
+                .await
+                .map_err(|e| {
+                    e.to_string()
+                })?
+                .flipv();
+
+            let mut buf = Vec::<u8>::new();
+            dimage.write_to(&mut Cursor::new(&mut buf), ImageFormat::Jpeg).unwrap();
+
+            buf
+        };
 
         let resolution = {
-            let (_long, lat) = pixel2ll((x as u32, y as u32), ZoomLv::parse(z * 256).unwrap());
-            AltitudeResolutionCriteria::Lat(lat, zoom_lv);
-            AltitudeResolutionCriteria::ZoomLv(zoom_lv)
+            let (pixel_x, pixel_y) = (x as u32 * 256 + 128, y as u32 * 256 + 128);
+            let (_long, lat) = pixel2ll((pixel_x, pixel_y), ZoomLv::parse(z).unwrap());
+            AltitudeResolutionCriteria::Lat(lat, zoom_lv)
         };
 
         let sampled = GIAJTerrainImageSampler::sampling(resolution, dem, None).unwrap();
@@ -71,10 +79,10 @@ impl Tile for ServerImpl {
             sampled,
             ValidSide::all() - ValidSide::BORDER - ValidSide::BOTTOM,
         )
-        .simplify();
+            .simplify();
 
         let texture = TextureInfo {
-            buf: Some(photo.to_vec()),
+            buf: Some(photo),
             uri: None,
             mime_type: Mime::ImageJpeg,
         };
@@ -89,7 +97,6 @@ impl Tile for ServerImpl {
             content_encoding: None,
         };
 
-        println!("created tile: z={}, x={}, y={}", z, x, y);
         Ok(response)
     }
 
