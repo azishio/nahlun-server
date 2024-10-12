@@ -6,14 +6,13 @@ use tokio::net::TcpListener;
 use tower_http::cors::{AllowOrigin, CorsLayer};
 
 use crate::apis::ServerImpl;
-use crate::cache::MultiLayerCache;
 use crate::env::EnvVars;
+use cache::multi_layer::MultiLayerCache;
 
 mod apis;
 mod cache;
 mod db;
 mod env;
-
 #[derive(Clone)]
 struct ServerState {}
 

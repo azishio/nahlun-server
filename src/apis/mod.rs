@@ -3,7 +3,7 @@
 use neo4rs::Graph;
 use reqwest::Client;
 
-use crate::cache::MultiLayerCache;
+use crate::cache::multi_layer::MultiLayerCache;
 
 mod private;
 mod tile;
