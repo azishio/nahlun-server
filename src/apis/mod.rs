@@ -6,7 +6,6 @@ use reqwest::Client;
 use crate::cache::MultiLayerCache;
 
 mod private;
-mod public;
 mod tile;
 
 /// パスごとの処理内容をimplするための構造体

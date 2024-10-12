@@ -28,7 +28,7 @@ impl PrivateSensor for ServerImpl {
             RETURN id
             "#,
         )
-        .param("id", query_params.id.to_string());
+            .param("id", query_params.id.to_string());
 
         let _ = self.graph.execute(query).await.unwrap();
 
@@ -48,6 +48,7 @@ impl PrivateSensor for ServerImpl {
             altitude,
             scope,
             interval,
+            parent_node
         } = body;
 
         let query = query(
@@ -64,10 +65,10 @@ impl PrivateSensor for ServerImpl {
             RETURN sensor
             "#,
         )
-        .param("id", query_params.id.to_string())
-        .param("altitude", altitude)
-        .param("scope", scope)
-        .param("interval", interval);
+            .param("id", query_params.id.to_string())
+            .param("altitude", altitude)
+            .param("scope", scope)
+            .param("interval", interval);
 
         let _ = self.graph.execute(query).await.unwrap();
 

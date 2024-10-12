@@ -1,11 +1,14 @@
 ---
 openapi: 3.0.1
 x-stoplight:
-  id: 47dnd5m1une99
+  id: 76mav8ydoatod
 info:
   title: nahlun-server
   description: ""
-  version: 1.0.0
+  version: 0.0.1
+  license:
+    name: MIT
+    url: "https://opensource.org/license/mit"
 tags:
   - name: tile
   - name: public/river
@@ -60,7 +63,7 @@ paths:
                 type: string
                 default: zstd
               description: zstd
-      security: []
+      security: [ ]
       operationId: ""
   "/tiles/land/{z}/{x}/{y}":
     get:
@@ -108,265 +111,8 @@ paths:
                 type: string
                 default: zstd
               description: zstd
-      security: []
-  /api/river-nodes:
-    get:
-      summary: ノード情報の取得
-      deprecated: false
-      description: ""
-      tags:
-        - public/river
-      parameters:
-        - name: id
-          in: query
-          description: ID番号
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: relation_limit
-          in: query
-          description: 繋がりのあるノードをいくつ持ってくるか
-          required: false
-          schema:
-            type: integer
-            default: 0
-            format: int32
-      responses:
-        "200":
-          description: ""
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: array
-                  items:
-                    $ref: "#/components/schemas/RiverNode"
-                  description: 指定したidから始まるパス
-                description: パスの配列
-          headers: {}
-      security: []
-  /api/river-nodes/bulk:
-    get:
-      summary: 範囲内のノードの情報を読む
-      deprecated: false
-      description: ""
-      tags:
-        - public/river
-      parameters:
-        - name: max-longitude
-          in: query
-          description: ""
-          required: true
-          schema:
-            type: number
-            format: double
-            minimum: -180.0
-            maximum: 180.0
-        - name: min-longitude
-          in: query
-          description: ""
-          required: true
-          schema:
-            type: number
-            format: double
-            minimum: -180.0
-            maximum: 180.0
-        - name: max-latitude
-          in: query
-          description: ""
-          required: true
-          schema:
-            type: number
-            format: double
-            minimum: -90.0
-            maximum: 90.0
-        - name: min-latitude
-          in: query
-          description: ""
-          required: true
-          schema:
-            type: number
-            format: double
-            minimum: -90.0
-            maximum: 90.0
-      responses:
-        "200":
-          description: ""
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/RiverNode"
-                description: RiverNodeのつながりの集合
-          headers: {}
-      security: []
-  /api/voxel-models/bulk:
-    get:
-      summary: 範囲内のモデルの情報を読む
-      deprecated: false
-      description: ""
-      tags:
-        - public/voxel_model
-      parameters:
-        - name: max-longitude
-          in: query
-          description: ""
-          required: true
-          schema:
-            type: number
-            format: double
-        - name: min-longitude
-          in: query
-          description: ""
-          required: true
-          schema:
-            type: number
-            format: double
-        - name: max-latitude
-          in: query
-          description: ""
-          required: true
-          schema:
-            type: number
-            format: double
-        - name: min-latitude
-          in: query
-          description: ""
-          required: true
-          schema:
-            type: number
-            format: double
-      responses:
-        "200":
-          description: ""
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/VoxelModel"
-          headers: {}
-      security: []
-  /api/voxel-models:
-    get:
-      summary: モデルの取得
-      deprecated: false
-      description: 指定したidのモデルを取得する
-      tags:
-        - public/voxel_model
-      parameters:
-        - name: id
-          in: query
-          description: ""
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        "200":
-          description: ""
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/VoxelModel"
-            application/xml:
-              schema:
-                $ref: "#/components/schemas/VoxelModel"
-          headers: {}
-      security: []
-    put:
-      summary: モデルの登録/上書き
-      deprecated: false
-      description: ""
-      tags:
-        - private/voxel_model
-      parameters:
-        - name: id
-          in: query
-          description: ""
-          required: true
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        content:
-          application/x-tar:
-            schema:
-              type: string
-              format: binary
-      responses:
-        "200":
-          description: ""
-          content: {}
-          headers: {}
-      security:
-        - bearer: []
-    delete:
-      summary: モデルの削除
-      deprecated: false
-      description: ""
-      tags:
-        - private/voxel_model
-      parameters:
-        - name: id
-          in: query
-          description: ID番号
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        "200":
-          description: ""
-          content: {}
-          headers: {}
-      security:
-        - bearer: []
+      security: [ ]
   /api/sensors:
-    get:
-      summary: 現在の情報を取得
-      deprecated: false
-      description: ""
-      tags:
-        - public/sensor
-      parameters:
-        - name: id
-          in: query
-          description: ID番号
-          required: true
-          schema:
-            type: string
-            format: uuid
-        - name: data_limit
-          in: query
-          description: データの取得数
-          required: false
-          schema:
-            type: integer
-            default: 1
-            format: int32
-      responses:
-        "200":
-          description: ""
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  sensor:
-                    $ref: "#/components/schemas/Sensor"
-                  data:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/SensorData"
-                required:
-                  - sensor
-                  - data
-          headers: {}
-      security: []
     put:
       summary: 登録/上書き
       deprecated: false
@@ -398,17 +144,27 @@ paths:
                   type: number
                   format: float
                   minimum: 0.0
+                parent_node:
+                  type: integer
+                  x-stoplight:
+                    id: o6h62euno1464
+                    explicitProperties:
+                      - type
+                      - format
+                      - minimum
+                  format: int64
+                  minimum: 0.0
               required:
                 - altitude
                 - interval
                 - scope
+                - parent_node
       responses:
         "200":
           description: ""
-          content: {}
-          headers: {}
-      security:
-        - bearer: []
+          content: { }
+          headers: { }
+      security: [ ]
     delete:
       summary: 削除
       deprecated: false
@@ -426,190 +182,66 @@ paths:
       responses:
         "200":
           description: ""
-          content: {}
-          headers: {}
-      security:
-        - bearer: []
+          content: { }
+          headers: { }
+      security: [ ]
+  /api/sensors/data:
+    parameters: [ ]
+    post:
+      summary: ""
+      operationId: post-api-sensors-data
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int32
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          in: query
+          name: id
+          description: sersor_uuid
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                distance:
+                  type: array
+                  x-stoplight:
+                    id: mhwq74ndz0w04
+                  items:
+                    x-stoplight:
+                      id: hj6atflma2p11
+                      explicitProperties:
+                        - type
+                        - format
+                    type: number
+                    format: float
+                battery_voltage:
+                  type: integer
+                  x-stoplight:
+                    id: 5xqio0w6q42vu
+                previous_sleep_time:
+                  type: integer
+                  x-stoplight:
+                    id: my3fclzrir3iy
+                network_status:
+                  type: string
+                  x-stoplight:
+                    id: e8wsj4prtgwx6
+              required:
+                - distance
+                - battery_voltage
+                - previous_sleep_time
+                - network_status
 components:
-  schemas:
-    RiverNode:
-      type: object
-      properties:
-        id:
-          type: integer
-          description: ZoomLv18でのヒルベルト値
-          format: int64
-        coord:
-          $ref: "#/components/schemas/Coord3D"
-      required:
-        - id
-        - coord
-      x-stoplight:
-        id: htp0mmdzsijon
-    SensorData:
-      type: object
-      properties:
-        value:
-          type: number
-          description: "測定値から平均処理をした値（水位ではない） [cm]"
-          format: float
-        battery_voltage:
-          type: number
-          description: "電池電圧の測定値 [mv]"
-          format: float
-        previous_sleep_time:
-          type: integer
-          description: "前回測定からのインターバル [分]"
-          format: int64
-        unix_time:
-          type: integer
-          description: UNIX時間
-          format: int64
-      required:
-        - value
-        - battery_voltage
-        - previous_sleep_time
-        - unix_time
-      x-stoplight:
-        id: uyiodx1lgboma
-    NetworkStatus:
-      type: object
-      properties:
-        system_mode:
-          type: string
-        operation_mode:
-          type: string
-        MCC:
-          type: string
-        MNC:
-          type: string
-        TAC:
-          type: string
-        SCelllD:
-          type: string
-        PCelllD:
-          type: string
-        frequency_band:
-          type: string
-        earfcn:
-          type: string
-        dlbw:
-          type: string
-        ulbw:
-          type: string
-        RSRQ:
-          type: string
-        RSRP:
-          type: string
-        RSSI:
-          type: string
-        RSSNR:
-          type: string
-      required:
-        - system_mode
-        - operation_mode
-        - MCC
-        - MNC
-        - TAC
-        - SCelllD
-        - PCelllD
-        - frequency_band
-        - earfcn
-        - dlbw
-        - ulbw
-        - RSRQ
-        - RSRP
-        - RSSI
-        - RSSNR
-      x-stoplight:
-        id: ge0xu72jpmiah
-    VoxelModel:
-      type: object
-      properties:
-        name:
-          type: string
-        id:
-          type: string
-          format: uuid
-        aabb:
-          $ref: "#/components/schemas/LLAABB"
-      required:
-        - name
-        - id
-        - aabb
-      x-stoplight:
-        id: nw1wgiuv3uzef
-    LLAABB:
-      type: object
-      properties:
-        top:
-          type: number
-          format: double
-        bottom:
-          type: number
-          format: double
-        right:
-          type: number
-          format: double
-        left:
-          type: number
-          format: double
-      required:
-        - top
-        - bottom
-        - left
-        - right
-      x-stoplight:
-        id: wmmtg4o03w6d3
-    Sensor:
-      type: object
-      properties:
-        id:
-          type: string
-          description: ID番号
-          format: uuid
-        altitude:
-          type: number
-          format: float
-        interval:
-          type: integer
-          minimum: 0.0
-          format: int32
-        scope:
-          type: number
-          format: float
-          minimum: 0.0
-      required:
-        - id
-        - altitude
-        - interval
-        - scope
-      x-stoplight:
-        id: l1bs5gn51jard
-    Coord3D:
-      type: object
-      properties:
-        longitude:
-          type: number
-          format: double
-          minimum: -180.0
-          maximum: 180.0
-        latitude:
-          type: number
-          format: double
-          minimum: -90.0
-          maximum: 90.0
-        altitude:
-          type: number
-          format: float
-      required:
-        - longitude
-        - latitude
-        - altitude
-      x-stoplight:
-        id: er5lerujmu09s
-  securitySchemes:
-    bearer:
-      type: http
-      scheme: bearer
-servers: []
+  schemas: { }
+  securitySchemes: { }
+servers: [ ]
