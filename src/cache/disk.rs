@@ -1,5 +1,5 @@
-use crate::cache::items::{CachedData, CachedDataDiscriminants};
-use crate::cache::CacheKey;
+use crate::cache::items::CacheKey;
+use crate::cache::items::CachedData;
 use moka::future::{Cache, FutureExt, PredicateId};
 use moka::PredicateError;
 use rustc_hash::FxBuildHasher;
@@ -12,17 +12,17 @@ use tokio::io::{AsyncReadExt, AsyncWriteExt};
 #[derive(Clone)]
 pub struct DiskCache {
     disk_path: PathBuf,
-    metadata: Cache<CacheKey, (CachedDataDiscriminants, PathBuf), FxBuildHasher>,
+    metadata: Cache<CacheKey, PathBuf, FxBuildHasher>,
 }
 
 impl DiskCache {
     pub(crate) fn new(disk_path: PathBuf, max_capacity: u64) -> Self {
         Self {
             disk_path,
-            metadata: Cache::<CacheKey, (CachedDataDiscriminants, PathBuf)>::builder()
+            metadata: Cache::<CacheKey, PathBuf>::builder()
                 .max_capacity(max_capacity)
                 .support_invalidation_closures()
-                .async_eviction_listener(|_, (_, path), _| {
+                .async_eviction_listener(|_, path, _| {
                     async move {
                         if path.exists() {
                             let _ = tokio::fs::remove_file(path).await;
@@ -43,12 +43,12 @@ impl DiskCache {
             .open(&file_path)
             .await?;
 
-        let (dtype, bytes) = data.as_bytes();
+        let bytes = bincode::serialize(data).unwrap();
 
-        file.write_all(bytes).await?;
+        file.write_all(&bytes).await?;
         file.flush().await?;
 
-        self.metadata.insert(key.clone(), (dtype, file_path)).await;
+        self.metadata.insert(key.clone(), file_path).await;
 
         Ok(())
     }
@@ -58,20 +58,19 @@ impl DiskCache {
         key: &CacheKey,
         compute_fn: impl Future<Output=CachedData>,
     ) -> anyhow::Result<CachedData> {
-        if let Some((dtype, file_path)) = self.metadata.get(key).await {
+        if let Some(file_path) = self.metadata.get(key).await {
             let file = OpenOptions::new().read(true).open(file_path).await?;
             let mut reader = tokio::io::BufReader::new(file);
 
             let mut buf = Vec::new();
             reader.read_to_end(&mut buf).await?;
 
-            let data = CachedData::from_bytes(dtype.clone(), &buf);
+            let data = bincode::deserialize(&buf)?;
 
             return Ok(data);
         }
 
         let data = compute_fn.await;
-        let (dtype, bytes) = data.as_bytes();
 
         let file_path = self.get_file_path(key);
 
@@ -82,17 +81,19 @@ impl DiskCache {
             .open(&file_path)
             .await?;
 
-        file.write_all(bytes).await?;
+        let bytes = bincode::serialize(&data)?;
+
+        file.write_all(&bytes).await?;
         file.flush().await?;
 
-        self.metadata.insert(key.clone(), (dtype, file_path)).await;
+        self.metadata.insert(*key, file_path).await;
 
         Ok(data)
     }
 
     pub(crate) async fn invalidate_entries_if<F>(&self, predicate: F) -> Result<PredicateId, PredicateError>
     where
-        F: Fn(&CacheKey, &(CachedDataDiscriminants, PathBuf)) -> bool
+        F: Fn(&CacheKey, &PathBuf) -> bool
         + Send
         + Sync
         + 'static

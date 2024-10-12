@@ -1,25 +1,24 @@
+use serde::{Deserialize, Serialize};
 use strum::EnumDiscriminants;
 
-// キャッシュデータの定義
-#[derive(Clone, EnumDiscriminants)]
-pub enum CachedData {
-    // (仮)
-    StringData(String),
+
+#[derive(Hash, Eq, PartialEq, Clone, Copy)]
+pub struct TileId {
+    pub x: u32,
+    pub y: u32,
+    pub z: u8,
+}
+// キャッシュキーの定義
+#[derive(Hash, Eq, PartialEq, Clone, Copy, EnumDiscriminants)]
+pub enum CacheKey {
+    LandTile(TileId),
+    WaterTile(TileId),
+    CustomVoxelModelTile(TileId),
 }
 
-impl CachedData {
-    // キャッシュデータをバイト列に変換
-    pub(crate) fn as_bytes(&self) -> (CachedDataDiscriminants, &[u8]) {
-        match self {
-            CachedData::StringData(s) => (CachedDataDiscriminants::StringData, s.as_bytes()),
-        }
-    }
-
-    pub(crate) fn from_bytes(dtype: CachedDataDiscriminants, bytes: &[u8]) -> Self {
-        match dtype {
-            CachedDataDiscriminants::StringData => {
-                CachedData::StringData(String::from_utf8(bytes.to_vec()).unwrap())
-            }
-        }
-    }
+#[derive(Clone, Serialize, Deserialize)]
+pub(crate) struct CachedData {
+    #[serde(with = "serde_bytes")]
+    pub bytes: Vec<u8>,
+    pub registered_at: u64,
 }

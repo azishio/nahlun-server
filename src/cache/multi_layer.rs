@@ -1,6 +1,6 @@
 use crate::cache::disk::DiskCache;
-use crate::cache::items::{CachedData, CachedDataDiscriminants};
-use crate::cache::CacheKey;
+use crate::cache::items::CachedData;
+use crate::cache::items::{CacheKey, CacheKeyDiscriminants};
 use moka::future::Cache;
 use rustc_hash::FxBuildHasher;
 use std::path::PathBuf;
@@ -38,26 +38,12 @@ impl MultiLayerCache {
             .into_value()
     }
 
-    // 特定の条件でキャッシュのエントリを無効化
-    pub async fn invalidate_entries_if<F>(&self, predicate: F) -> anyhow::Result<()>
-    where
-        F: Fn(&CacheKey) -> bool + Send + Sync + 'static + Clone,
-    {
-        // メモリキャッシュのエントリを無効化する条件
-        let predicate_for_memory = {
-            let predicate = predicate.clone();
-            move |key: &CacheKey, _: &CachedData| -> bool { predicate(key) }
+    // 特定の種類のエントリをキャッシュから削除
+    pub async fn evict(&self, key_type: CacheKeyDiscriminants) {
+        let predicate = |key: &CacheKey, _: &CachedData| -> bool {
+            CacheKeyDiscriminants::from(key) == key_type
         };
-        // ディスクキャッシュのエントリを無効化する条件
-        let predicate_for_disk = {
-            move |key: &CacheKey, _: &(CachedDataDiscriminants, PathBuf)| -> bool { predicate(key) }
-        };
-
-        // メモリキャッシュのエントリを条件に基づいて無効化
-        self.memory.invalidate_entries_if(predicate_for_memory)?;
-        // ディスクキャッシュも同様に無効化する
-        self.disk.invalidate_entries_if(predicate_for_disk).await?;
-
-        Ok(())
+        self.memory.invalidate_entries_if(predicate).unwrap();
+        self.disk.invalidate_entries_if(predicate).await.unwrap();
     }
 }
