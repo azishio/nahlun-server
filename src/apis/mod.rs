@@ -3,6 +3,8 @@
 use crate::cache::multi_layer::MultiLayerCache;
 use crate::env::EnvVars;
 use neo4rs::{ConfigBuilder, Graph};
+use rust_socketio::client::Client;
+use rust_socketio::ClientBuilder;
 
 mod tile;
 mod sensor;
@@ -13,13 +15,11 @@ mod sensor_data;
 pub struct ServerImpl {
     graph: Graph,
     cache: MultiLayerCache,
-    http_client: Client,
     http_client: reqwest::Client,
+    socketio_client: Client,
 }
 impl ServerImpl {
     /// 新しいServerImplを作成する
-    pub fn with_graph_and_cache(graph: Graph, cache: MultiLayerCache) -> Self {
-        let http_client = Client::new();
     pub async fn new() -> Self {
         let env = EnvVars::read_env().unwrap();
 
@@ -46,10 +46,16 @@ impl ServerImpl {
 
 
         let http_client = reqwest::Client::new();
+        let socketio_client = ClientBuilder::new(env.socketio_host)
+            .namespace("/water_surface")
+            .connect()
+            .expect("Failed to connect to socket.io server");
+
         Self {
             graph,
             cache,
             http_client,
+            socketio_client,
         }
     }
 }

@@ -77,6 +77,9 @@ RETURN sensor.interval AS interval
             .await.unwrap().unwrap()
             .to::<i32>().unwrap();
 
+        // TODO より細かい粒度でデータの更新を伝える
+        self.socketio_client.emit("broadcast_request", Local::now().to_rfc3339()).unwrap();
+
         Ok(PostApiSensorsDataResponse::Status200_OK(interval))
     }
 }
