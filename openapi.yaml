@@ -1,57 +1,55 @@
----
 openapi: 3.0.1
 x-stoplight:
-  id: 76mav8ydoatod
+  id: d0784ahdetvsk
 info:
   title: nahlun-server
-  description: ""
-  version: 0.0.1
+  description: ''
+  version: 0.0.2
   license:
     name: MIT
-    url: "https://opensource.org/license/mit"
+    url: 'https://opensource.org/license/mit'
 tags:
   - name: tile
-  - name: public/river
-  - name: public/voxel_model
-  - name: public/sensor
-  - name: private/sensor
-  - name: private/voxel_model
+  - name: sensor
+  - name: sensor_data
 paths:
-  "/tiles/water/{z}/{x}/{y}":
+  '/tiles/water/{z}/{x}/{y}':
     get:
       summary: 水面タイル
       deprecated: false
-      description: "deck.glのTerrainLayerに喰わせる。\n水面を表現した標高画像タイルを返す"
+      description: |-
+        deck.glのTerrainLayerに喰わせる。
+        水面を表現した標高画像タイルを返す
       tags:
         - tile
       parameters:
         - name: z
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: integer
             format: int64
-            minimum: 0.0
+            minimum: 0
         - name: x
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: integer
             format: int64
-            minimum: 0.0
-        - name: y
+            minimum: 0
+        - name: 'y'
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: integer
             format: int64
-            minimum: 0.0
+            minimum: 0
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
           content:
             model/gltf-binary:
               schema:
@@ -64,8 +62,8 @@ paths:
                 default: zstd
               description: zstd
       security: [ ]
-      operationId: ""
-  "/tiles/land/{z}/{x}/{y}":
+      operationId: ''
+  '/tiles/land/{z}/{x}/{y}':
     get:
       summary: 陸域タイル
       deprecated: false
@@ -75,31 +73,31 @@ paths:
       parameters:
         - name: z
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: integer
             format: int64
-            minimum: 0.0
+            minimum: 0
         - name: x
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: integer
             format: int64
-            minimum: 0.0
-        - name: y
+            minimum: 0
+        - name: 'y'
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: integer
             format: int64
-            minimum: 0.0
+            minimum: 0
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
           content:
             model/gltf-binary:
               schema:
@@ -116,9 +114,7 @@ paths:
     put:
       summary: 登録/上書き
       deprecated: false
-      description: ""
-      tags:
-        - private/sensor
+      description: ''
       parameters:
         - name: id
           in: query
@@ -138,12 +134,12 @@ paths:
                   format: float
                 interval:
                   type: integer
-                  minimum: 0.0
+                  minimum: 0
                   format: int32
                 scope:
                   type: number
                   format: float
-                  minimum: 0.0
+                  minimum: 0
                 parent_node:
                   type: integer
                   x-stoplight:
@@ -153,24 +149,26 @@ paths:
                       - format
                       - minimum
                   format: int64
-                  minimum: 0.0
+                  minimum: 0
               required:
                 - altitude
                 - interval
                 - scope
                 - parent_node
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
           content: { }
           headers: { }
       security: [ ]
+      tags:
+        - sensor
     delete:
       summary: 削除
       deprecated: false
-      description: ""
+      description: ''
       tags:
-        - private/sensor
+        - sensor
       parameters:
         - name: id
           in: query
@@ -180,18 +178,18 @@ paths:
             type: string
             format: uuid
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
           content: { }
           headers: { }
       security: [ ]
   /api/sensors/data:
     parameters: [ ]
     post:
-      summary: ""
+      summary: ''
       operationId: post-api-sensors-data
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -241,6 +239,8 @@ paths:
                 - battery_voltage
                 - previous_sleep_time
                 - network_status
+      tags:
+        - sensor_data
 components:
   schemas: { }
   securitySchemes: { }
