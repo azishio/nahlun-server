@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
+use std::str::FromStr;
+use strum::EnumIter;
 
 #[derive(Hash, Eq, PartialEq, Clone, Copy)]
 pub struct TileId {
@@ -14,7 +16,19 @@ impl Display for TileId {
     }
 }
 
-#[derive(Hash, Eq, PartialEq, Clone, Copy, strum::Display)]
+impl FromStr for TileId {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let mut parts = s.split('_');
+        let x = parts.next().ok_or(())?.parse().map_err(|_| ())?;
+        let y = parts.next().ok_or(())?.parse().map_err(|_| ())?;
+        let z = parts.next().ok_or(())?.parse().map_err(|_| ())?;
+        Ok(TileId { x, y, z })
+    }
+}
+
+#[derive(Hash, Eq, PartialEq, Clone, Copy, strum::Display, EnumIter)]
 #[strum(serialize_all = "snake_case")]
 pub enum CacheDataType {
     LandTile,
