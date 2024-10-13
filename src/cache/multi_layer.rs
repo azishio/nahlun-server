@@ -14,7 +14,7 @@ pub struct MultiLayerCache {
 
 impl MultiLayerCache {
     // 新しい2層キャッシュを初期化
-    pub fn new(memory_capacity: u64, disk_capacity: u64, disk_path: PathBuf) -> Self {
+    pub async fn new(memory_capacity: u64, disk_capacity: u64, disk_path: PathBuf) -> Self {
         let memory = Cache::<CacheKey, CachedData>::builder()
             .max_capacity(memory_capacity)
             .support_invalidation_closures()
@@ -22,7 +22,7 @@ impl MultiLayerCache {
 
         Self {
             memory,
-            disk: DiskCache::new(disk_path.clone(), disk_capacity),
+            disk: DiskCache::new(disk_path.clone(), disk_capacity).await,
         }
     }
 

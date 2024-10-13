@@ -39,7 +39,7 @@ async fn main() {
         env.memory_cache_max_size,
         env.disk_cache_max_size,
         env.disk_cache_base_path.into(),
-    );
+    ).await;
 
     let router = new(ServerImpl::with_graph_and_cache(graph, cache)).layer(
         CorsLayer::new()

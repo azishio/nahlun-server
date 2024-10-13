@@ -3,9 +3,7 @@ use axum::extract::Host;
 use axum::http::Method;
 use axum_extra::extract::CookieJar;
 use neo4rs::query;
-use openapi::apis::private_sensor::{
-    ApiSensorsDeleteResponse, ApiSensorsPutResponse, PrivateSensor,
-};
+use openapi::apis::sensor::{ApiSensorsDeleteResponse, ApiSensorsPutResponse, Sensor};
 use openapi::models::{
     ApiSensorsDeleteQueryParams, ApiSensorsPutQueryParams, ApiSensorsPutRequest,
 };
@@ -13,7 +11,7 @@ use openapi::models::{
 use crate::apis::ServerImpl;
 
 #[async_trait]
-impl PrivateSensor for ServerImpl {
+impl Sensor for ServerImpl {
     async fn api_sensors_delete(
         &self,
         _method: Method,

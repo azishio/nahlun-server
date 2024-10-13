@@ -5,8 +5,9 @@ use reqwest::Client;
 
 use crate::cache::multi_layer::MultiLayerCache;
 
-mod private;
 mod tile;
+mod sensor;
+mod sensor_data;
 
 /// パスごとの処理内容をimplするための構造体
 #[derive(Clone)]
@@ -15,7 +16,6 @@ pub struct ServerImpl {
     cache: MultiLayerCache,
     http_client: Client,
 }
-
 impl ServerImpl {
     /// 新しいServerImplを作成する
     pub fn with_graph_and_cache(graph: Graph, cache: MultiLayerCache) -> Self {
