@@ -1,6 +1,6 @@
 use crate::cache::disk::DiskCache;
-use crate::cache::items::CachedData;
-use crate::cache::items::{CacheKey, CacheKeyDiscriminants};
+use crate::cache::items::CacheDataType;
+use crate::cache::items::{CacheKey, CachedData};
 use moka::future::Cache;
 use rustc_hash::FxBuildHasher;
 use std::path::PathBuf;
@@ -39,11 +39,16 @@ impl MultiLayerCache {
     }
 
     // 特定の種類のエントリをキャッシュから削除
-    pub async fn evict(&self, key_type: CacheKeyDiscriminants) {
-        let predicate = |key: &CacheKey, _: &CachedData| -> bool {
-            CacheKeyDiscriminants::from(key) == key_type
+    pub async fn evict(&self, data_type: CacheDataType) {
+        let predicate_memory = move |key: &CacheKey, _: &CachedData| -> bool {
+            key.data_type == data_type
         };
-        self.memory.invalidate_entries_if(predicate).unwrap();
-        self.disk.invalidate_entries_if(predicate).await.unwrap();
+
+        let predicate_disk = move |key: &CacheKey, _: &PathBuf| -> bool {
+            key.data_type == data_type
+        };
+
+        self.memory.invalidate_entries_if(predicate_memory).unwrap();
+        self.disk.invalidate_entries_if(predicate_disk).await.unwrap();
     }
 }

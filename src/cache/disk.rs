@@ -4,7 +4,6 @@ use moka::future::{Cache, FutureExt, PredicateId};
 use moka::PredicateError;
 use rustc_hash::FxBuildHasher;
 use std::future::Future;
-use std::hash::BuildHasher;
 use std::path::PathBuf;
 use tokio::fs::OpenOptions;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
@@ -17,24 +16,26 @@ pub struct DiskCache {
 
 impl DiskCache {
     pub(crate) fn new(disk_path: PathBuf, max_capacity: u64) -> Self {
+        let metadata = Cache::<CacheKey, PathBuf>::builder()
+            .max_capacity(max_capacity)
+            .support_invalidation_closures()
+            .async_eviction_listener(|_, path, _| {
+                async move {
+                    if path.exists() {
+                        let _ = tokio::fs::remove_file(path).await;
+                    }
+                }
+                    .boxed()
+            })
+            .build_with_hasher(FxBuildHasher::default());
+
         Self {
             disk_path,
-            metadata: Cache::<CacheKey, PathBuf>::builder()
-                .max_capacity(max_capacity)
-                .support_invalidation_closures()
-                .async_eviction_listener(|_, path, _| {
-                    async move {
-                        if path.exists() {
-                            let _ = tokio::fs::remove_file(path).await;
-                        }
-                    }
-                        .boxed()
-                })
-                .build_with_hasher(FxBuildHasher::default()),
+            metadata,
         }
     }
     pub(crate) async fn insert(&self, key: &CacheKey, data: &CachedData) -> std::io::Result<()> {
-        let file_path = self.get_file_path(key);
+        let file_path = self.disk_path.join(key.to_string());
 
         let mut file = OpenOptions::new()
             .write(true)
@@ -72,7 +73,7 @@ impl DiskCache {
 
         let data = compute_fn.await;
 
-        let file_path = self.get_file_path(key);
+        let file_path = self.disk_path.join(key.to_string());
 
         let mut file = OpenOptions::new()
             .write(true)
@@ -100,10 +101,5 @@ impl DiskCache {
         + Clone,
     {
         self.metadata.invalidate_entries_if(predicate)
-    }
-
-    fn get_file_path(&self, key: &CacheKey) -> PathBuf {
-        self.disk_path
-            .join(FxBuildHasher::default().hash_one(&key).to_string())
     }
 }
