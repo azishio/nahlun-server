@@ -82,9 +82,9 @@ CALL apoc.do.when(
     DELETE a
 
     // 4.2. 新しいBELONGS_TO関係の作成
-    MATCH (newParent:RiverNode {id: $newParentId})
+    MATCH (newParent:RiverNode {hilbert18: newParentId})
     CREATE (sensor)-[:BELONGS_TO]->(newParent)
-    
+
     // 4.3. 新しいAFFECTS関係の作成
     CALL apoc.path.expandConfig(newParent, {
       relationshipFilter: "RIVER_LINK",
@@ -93,11 +93,21 @@ CALL apoc.do.when(
       maxLevel: 1000
     }) YIELD path
 
-    WITH sensor, path, $newScope AS maxScope
-    WHERE reduce(total = 0, r IN relationships(path) | total + r.length) <= maxScope
+    WITH sensor, path, $newScope AS maxScope,
+         reduce(total = 0, r IN relationships(path) | total + r.length) AS distance
+    WHERE distance <= maxScope
 
     UNWIND nodes(path) AS node
-    MERGE (sensor)-[:AFFECTS]->(node)
+    // distanceプロパティをAFFECTS関係に追加
+    MERGE (sensor)-[affects:AFFECTS]->(node)
+      ON CREATE SET affects.distance = distance
+      ON MATCH SET affects.distance = distance
+      
+    // BELONGS_TO関係のあるノードにはAFFECTS関係を削除
+    MATCH (sensor)-[:BELONGS_TO]->(parent:RiverNode)
+    MATCH (sensor)-[a:AFFECTS]->(parent)
+    DELETE a
+    
   ',
   '', // 条件が偽の場合は何もしない
   {sensor: sensor, newParentId: newParentId, newScope: newScope}
@@ -105,7 +115,6 @@ CALL apoc.do.when(
 
 // 5. クエリの終了
 RETURN sensor
-
             "#,
         )
             .param("id", query_params.id.to_string())
