@@ -1,4 +1,5 @@
 use crate::apis::ServerImpl;
+use axum::async_trait;
 use axum::extract::Host;
 use axum::http::Method;
 use axum_extra::extract::CookieJar;
@@ -7,6 +8,7 @@ use neo4rs::query;
 use openapi::apis::sensor_data::{PostApiSensorsDataResponse, SensorData};
 use openapi::models::{PostApiSensorsDataQueryParams, PostApiSensorsDataRequest};
 
+#[async_trait]
 impl SensorData for ServerImpl {
     async fn post_api_sensors_data(
         &self, _method: Method,
@@ -48,10 +50,10 @@ CALL apoc.do.when(
     // CURRENT_DATA リレーションシップを削除
     MATCH (sensor)-[:CURRENT_DATA]->(current_data)
     DELETE (sensor)-[:CURRENT_DATA]->(current_data)
-    
+
     // 新しい CURRENT_DATA リレーションシップを作成
     CREATE (sensor)-[:CURRENT_DATA]->(new_data)
-    
+
     // PREVIOUS_DATA リレーションシップを作成
     CREATE (new_data)-[:PREVIOUS_DATA]->(current_data)
     ',
@@ -114,7 +116,7 @@ RETURN sensor.interval AS interval
             .to::<i32>().unwrap();
 
         // TODO より細かい粒度でデータの更新を伝える
-        self.socketio_client.emit("broadcast_request", Local::now().to_rfc3339()).unwrap();
+        self.socketio_client.emit("broadcast_request", Local::now().to_rfc3339()).await.unwrap();
 
         Ok(PostApiSensorsDataResponse::Status200_OK(interval))
     }

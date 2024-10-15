@@ -3,8 +3,7 @@
 use crate::cache::multi_layer::MultiLayerCache;
 use crate::env::EnvVars;
 use neo4rs::{ConfigBuilder, Graph};
-use rust_socketio::client::Client;
-use rust_socketio::ClientBuilder;
+use rust_socketio::asynchronous::{Client, ClientBuilder};
 
 mod tile;
 mod sensor;
@@ -49,6 +48,7 @@ impl ServerImpl {
         let socketio_client = ClientBuilder::new(env.socketio_host)
             .namespace("/water_surface")
             .connect()
+            .await
             .expect("Failed to connect to socket.io server");
 
         Self {
