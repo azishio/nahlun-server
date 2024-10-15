@@ -15,12 +15,14 @@ struct ServerState {}
 
 #[tokio::main]
 async fn main() {
+    let env = env::EnvVars::read_env().unwrap();
+
     let router = new(ServerImpl::new()).layer(
         CorsLayer::new()
-            .allow_origin(AllowOrigin::exact("http://localhost:3001".parse().unwrap()))
+            .allow_origin(AllowOrigin::exact(env.client_host.parse().unwrap()))
             .allow_methods(vec![Method::GET]),
     );
-    let listener = TcpListener::bind("localhost:3000").await.unwrap();
+    let listener = TcpListener::bind(env.server_host).await.unwrap();
 
     serve(listener, router).await.unwrap();
 }
