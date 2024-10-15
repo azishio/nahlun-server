@@ -111,6 +111,57 @@ paths:
               description: zstd
       security: [ ]
   /api/sensors:
+    post:
+      summary: 登録/上書き
+      deprecated: false
+      description: ''
+      parameters:
+        - name: id
+          in: query
+          description: ID番号
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                altitude:
+                  type: number
+                  format: float
+                interval:
+                  type: integer
+                  minimum: 0
+                  format: int32
+                scope:
+                  type: number
+                  format: float
+                parent_node:
+                  type: integer
+                  x-stoplight:
+                    id: o6h62euno1464
+                    explicitProperties:
+                      - type
+                      - format
+                      - minimum
+                  format: int64
+                  minimum: 0
+              required:
+                - altitude
+                - interval
+                - scope
+                - parent_node
+      responses:
+        '200':
+          description: ''
+          content: { }
+          headers: { }
+      security: [ ]
+      tags:
+        - sensor
     put:
       summary: 登録/上書き
       deprecated: false
