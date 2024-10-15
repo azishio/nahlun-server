@@ -1,6 +1,6 @@
 openapi: 3.0.1
 x-stoplight:
-  id: d0784ahdetvsk
+  id: g70sh5dzuzpzw
 info:
   title: nahlun-server
   description: ''
@@ -139,7 +139,6 @@ paths:
                 scope:
                   type: number
                   format: float
-                  minimum: 0
                 parent_node:
                   type: integer
                   x-stoplight:
