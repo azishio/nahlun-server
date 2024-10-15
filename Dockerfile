@@ -12,7 +12,7 @@ RUN apt update && apt install -y mold
 
 WORKDIR /app
 
-COPY Cargo.toml Cargo.lock build.rs openapi.yaml ./
+COPY Cargo.toml Cargo.lock openapi.yaml ./
 COPY src ./src
 COPY --from=codegen /app/openapi_gen ./openapi_gen
 
