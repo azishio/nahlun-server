@@ -210,17 +210,10 @@ paths:
               type: object
               properties:
                 distance:
-                  type: array
+                  type: number
+                  format: float
                   x-stoplight:
                     id: mhwq74ndz0w04
-                  items:
-                    x-stoplight:
-                      id: hj6atflma2p11
-                      explicitProperties:
-                        - type
-                        - format
-                    type: number
-                    format: float
                 battery_voltage:
                   type: integer
                   x-stoplight:
