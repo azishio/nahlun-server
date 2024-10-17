@@ -44,9 +44,9 @@ RETURN id
         let ApiSensorsPostQueryParams { id } = query_params;
 
         let mut tnx = self.graph.start_txn().await.unwrap();
-        let _ = tnx
-            .run_queries([
-                query(r#"
+
+        let create_sensor_result = tnx.run(
+            query(r#"
 MERGE (sensor:Sensor{id:$id})
 ON CREATE
  SET sensor.altitude=$altitude,
@@ -62,8 +62,18 @@ ON MATCH
 WITH sensor
 MATCH (sensor)-[r:BELONGS_TO|AFFECTS]-(parent:RiverNode)
 DELETE r
-                "#),
-                query(r#"
+                "#)
+                .param("id", id.to_string())
+                .param("altitude", altitude)
+                .param("interval", interval)
+                .param("scope", scope)
+                .param("parent_node", parent_node.to_string()),
+        ).await;
+
+        let create_affects_result =
+            tnx
+                .run(
+                    query(r#"
 MATCH (parent:RiverNode{hilbert18:$parent_node})
 MATCH (sensor:Sensor{id:$id})
 CREATE (sensor)-[:BELONGS_TO]->(parent)
@@ -83,7 +93,15 @@ WITH sensor, parent, last(nodes(path)) AS target,
 WHERE distance <= $scope
 CREATE (sensor)-[:AFFECTS {distance: distance}]->(target)
                 "#)
-            ]).await;
+                        .param("id", id.to_string())
+                        .param("parent_node", parent_node.to_string())
+                        .param("scope", scope),
+                ).await;
+
+        if create_sensor_result.is_err() || create_affects_result.is_err() {
+            tnx.rollback().await.unwrap();
+            return Err("Failed to create sensor".to_string());
+        }
 
         tnx.commit().await.unwrap();
 
