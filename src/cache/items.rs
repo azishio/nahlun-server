@@ -31,9 +31,9 @@ impl FromStr for TileId {
 #[derive(Hash, Eq, PartialEq, Clone, Copy, strum::Display, EnumIter)]
 #[strum(serialize_all = "snake_case")]
 pub enum CacheDataType {
-    LandTile,
-    WaterTile,
-    CustomVoxelModelTile,
+    Land,
+    Water,
+    CustomVoxelModel,
 }
 
 #[derive(Hash, Eq, PartialEq, Clone, Copy)]
