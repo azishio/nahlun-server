@@ -25,7 +25,7 @@ impl SensorData for ServerImpl {
             network_status,
         } = body;
 
-        let query = query(
+        let _ = self.graph.execute(query(
             r#"
 // 1. センサーの取得
 MATCH (sensor:Sensor {id: $id})
@@ -87,12 +87,12 @@ MATCH (affectedRiverNode)<-[affectsLink:AFFECTS]-(:Sensor)-[:BELONGS_TO]->(:Rive
 WITH affectedRiverNode, waterLevel.value AS value, 1.0 / affectsLink.distance AS weight
 
 // 9. 水位の加重平均を計算
-WITH affectedRiverNode, 
-     SUM(value * weight) AS weightedSum, 
+WITH affectedRiverNode,
+     SUM(value * weight) AS weightedSum,
      SUM(weight) AS totalWeight
 
 // 10. 加重平均を計算結果として保持
-WITH affectedRiverNode, 
+WITH affectedRiverNode,
      weightedSum / totalWeight AS avgWaterLevel
 
 // 11. 計算された加重平均水位を WaterLevel ノードに設定
@@ -106,12 +106,19 @@ MERGE (affectedRiverNode)-[:WATER_LEVEL]->(wl:WaterLevel)
             .param("battery_voltage", battery_voltage)
             .param("previous_sleep_time", previous_sleep_time)
             .param("network_status", network_status)
-            .param("time", Local::now().to_rfc3339());
+            .param("time", Local::now().to_rfc3339())).await.unwrap();
 
-        let interval = self.graph.execute(query)
+        let interval = self.graph.execute(query(
+            r#"
+MATCH (sensor:Sensor {id: $id})
+RETURN tointeger(sensor.interval) AS interval
+            "#,
+        )
+            .param("id", query_params.id.to_string()))
             .await.unwrap().next()
             .await.unwrap().unwrap()
             .to::<i32>().unwrap();
+
 
         // TODO より細かい粒度でデータの更新を伝える
         self.socketio_client.emit("broadcast_request", Local::now().to_rfc3339()).await.unwrap();
