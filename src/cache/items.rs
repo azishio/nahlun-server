@@ -10,6 +10,12 @@ pub struct TileId {
     pub z: u8,
 }
 
+impl TileId {
+    pub fn new(x: u32, y: u32, z: u8) -> Self {
+        TileId { x, y, z }
+    }
+}
+
 impl Display for TileId {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}_{}_{}", self.x, self.y, self.z)
@@ -53,4 +59,13 @@ pub(crate) struct CachedData {
     #[serde(with = "serde_bytes")]
     pub bytes: Vec<u8>,
     pub registered_at: u64,
+}
+
+impl CachedData {
+    pub fn new(bytes: Vec<u8>) -> Self {
+        CachedData {
+            bytes,
+            registered_at: chrono::Utc::now().timestamp_millis() as u64,
+        }
+    }
 }

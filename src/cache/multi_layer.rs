@@ -3,6 +3,7 @@ use crate::cache::items::CacheDataType;
 use crate::cache::items::{CacheKey, CachedData};
 use moka::future::Cache;
 use rustc_hash::FxBuildHasher;
+use std::future::Future;
 use std::path::PathBuf;
 
 // 2層キャッシュの構造体
@@ -25,15 +26,14 @@ impl MultiLayerCache {
             disk: DiskCache::new(disk_path.clone(), disk_capacity).await,
         }
     }
+    // let compute_fn: fn() -> impl Future<Output=Vec<u8>>+Sized
 
     // キャッシュにデータを登録（必要ならば計算）
-    pub async fn get_or_compute<F>(&self, key: CacheKey, compute_fn: F) -> CachedData
-    where
-        F: FnOnce() -> CachedData,
+    pub async fn get_or_compute(&self, key: CacheKey, compute_fu: impl Future<Output=CachedData>) -> CachedData
     {
         self.memory
             .entry_by_ref(&key)
-            .or_insert_with(async { self.get_or_compute(key, compute_fn).await })
+            .or_insert_with(compute_fu)
             .await
             .into_value()
     }
