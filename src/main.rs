@@ -23,7 +23,8 @@ async fn main() {
 
     let router = new(ServerImpl::new().await)
         .route("/", get(|| async move {
-            format!("Hello, Nahlun! by {server_host}\nI'm Server Container.\n")
+            const VERSION: &'static str = env!("CARGO_PKG_VERSION");
+            format!("Hello, Nahlun! by {server_host}\nI'm Server Container v{VERSION}.\n")
         }))
         .layer(
             CorsLayer::new()
