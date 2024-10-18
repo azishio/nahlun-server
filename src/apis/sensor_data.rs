@@ -25,7 +25,9 @@ impl SensorData for ServerImpl {
             network_status,
         } = body;
 
-        let _ = self.graph.execute(query(
+        let mut tnx = self.graph.start_txn().await.unwrap();
+
+        let create_sensor_data_result = tnx.run(query(
             r#"
 // 1. センサーの取得
 MATCH (sensor:Sensor {id: $id})
@@ -66,10 +68,20 @@ CALL apoc.do.when(
     {sensor: sensor, currentData: currentData, newData: newData}
 ) YIELD value
 
-WITH sensor
+RETURN value
+"#)
+            .param("id", query_params.id.to_string())
+            .param("distance", distance)
+            .param("battery_voltage", battery_voltage)
+            .param("previous_sleep_time", previous_sleep_time)
+            .param("network_status", network_status)
+            .param("time", Local::now().to_rfc3339())
+        ).await;
 
+        let upsert_water_level = tnx.run(query(
+            r#"
 // 5. センサーが所属する親河川ノードの取得
-MATCH (sensor)-[:BELONGS_TO]->(parentRiverNode:RiverNode)
+MATCH (sensor:Sensor{id:$id})-[:BELONGS_TO]->(parentRiverNode:RiverNode)
 
 // 6. センサーの水位データを計算し、WaterLevel ノードを作成または更新
 // 水位は sensor の altitude から distance を引いた値
@@ -103,10 +115,16 @@ MERGE (affectedRiverNode)-[:WATER_LEVEL]->(wl:WaterLevel)
         )
             .param("id", query_params.id.to_string())
             .param("distance", distance)
-            .param("battery_voltage", battery_voltage)
-            .param("previous_sleep_time", previous_sleep_time)
-            .param("network_status", network_status)
-            .param("time", Local::now().to_rfc3339())).await.unwrap();
+        ).await;
+
+        if create_sensor_data_result.is_err() || upsert_water_level.is_err() {
+            println!("create_sensor_data_result: {:?}", create_sensor_data_result);
+            println!("upsert_water_level: {:?}", upsert_water_level);
+            tnx.rollback().await.unwrap();
+            return Err("Failed to create sensor data".to_string());
+        }
+
+        tnx.commit().await.unwrap();
 
         let interval = self.graph.execute(query(
             r#"
