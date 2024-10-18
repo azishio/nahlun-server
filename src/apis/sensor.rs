@@ -67,7 +67,7 @@ DELETE r
                 .param("altitude", altitude)
                 .param("interval", interval)
                 .param("scope", scope)
-                .param("parent_node", parent_node.to_string()),
+                .param("parent_node", parent_node.clone()),
         ).await;
 
         let create_affects_result =
@@ -94,7 +94,7 @@ WHERE distance <= $scope
 CREATE (sensor)-[:AFFECTS {distance: distance}]->(target)
                 "#)
                         .param("id", id.to_string())
-                        .param("parent_node", parent_node.to_string())
+                        .param("parent_node", parent_node)
                         .param("scope", scope),
                 ).await;
 
