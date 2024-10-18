@@ -1,6 +1,6 @@
 openapi: 3.0.1
 x-stoplight:
-  id: g70sh5dzuzpzw
+  id: thzwi79akups3
 info:
   title: nahlun-server
   description: ''
@@ -61,7 +61,7 @@ paths:
                 type: string
                 default: zstd
               description: zstd
-      security: [ ]
+      security: []
       operationId: ''
   '/tiles/land/{z}/{x}/{y}':
     get:
@@ -109,7 +109,7 @@ paths:
                 type: string
                 default: zstd
               description: zstd
-      security: [ ]
+      security: []
   /api/sensors:
     post:
       summary: 登録/上書き
@@ -140,15 +140,13 @@ paths:
                   type: number
                   format: float
                 parent_node:
-                  type: integer
+                  type: string
                   x-stoplight:
                     id: o6h62euno1464
                     explicitProperties:
                       - type
                       - format
-                      - minimum
                   format: int64
-                  minimum: 0
               required:
                 - altitude
                 - interval
@@ -157,9 +155,9 @@ paths:
       responses:
         '200':
           description: ''
-          content: { }
-          headers: { }
-      security: [ ]
+          content: {}
+          headers: {}
+      security: []
       tags:
         - sensor
     delete:
@@ -179,11 +177,11 @@ paths:
       responses:
         '200':
           description: ''
-          content: { }
-          headers: { }
-      security: [ ]
+          content: {}
+          headers: {}
+      security: []
   /api/sensors/data:
-    parameters: [ ]
+    parameters: []
     post:
       summary: ''
       operationId: post-api-sensors-data
@@ -214,6 +212,9 @@ paths:
                   format: float
                   x-stoplight:
                     id: mhwq74ndz0w04
+                    explicitProperties:
+                      - type
+                      - format
                 battery_voltage:
                   type: integer
                   x-stoplight:
@@ -234,6 +235,6 @@ paths:
       tags:
         - sensor_data
 components:
-  schemas: { }
-  securitySchemes: { }
-servers: [ ]
+  schemas: {}
+  securitySchemes: {}
+servers: []
