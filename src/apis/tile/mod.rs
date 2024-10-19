@@ -1,23 +1,28 @@
 //! 幾つかのタイルデータを公開
 
+mod glb;
+
 use std::io::Cursor;
 
 use axum::async_trait;
 use axum::extract::Host;
 use axum::http::Method;
 use axum_extra::extract::CookieJar;
-use coordinate_transformer::pixel2ll;
-use neo4rs::query;
+use coordinate_transformer::{pixel2ll, pixel_resolution};
+use gltf::Glb;
+use neo4rs::{query, BoltFloat, BoltPoint2D};
 use openapi::apis::tile::{Tile, TilesLandZxyGetResponse, TilesWaterZxyGetResponse};
 use openapi::models::{TilesLandZxyGetPathParams, TilesWaterZxyGetPathParams};
 use openapi::types::ByteArray;
 use reqwest::Client;
+use spade::{DelaunayTriangulation, FloatTriangulation, HasPosition, Point2, Triangulation};
 use voxel_tiler_core::coordinate_transformer::ZoomLv;
 use voxel_tiler_core::giaj_terrain::{AltitudeResolutionCriteria, GIAJTerrainImageSampler};
-use voxel_tiler_core::glb::{Glb, GlbGen, Mime, TextureInfo};
+use voxel_tiler_core::glb::{GlbGen, Mime, TextureInfo};
 use voxel_tiler_core::image::{DynamicImage, ImageFormat, ImageReader};
 use voxel_tiler_core::mesh::{Mesher, ValidSide};
 
+use crate::apis::tile::glb::{Point3D, VMesh, WaterGlbGen};
 use crate::apis::ServerImpl;
 use crate::cache::items::{CacheDataType, CacheKey, CachedData, TileId};
 
@@ -127,6 +132,112 @@ impl Tile for ServerImpl {
         _cookies: CookieJar,
         path_params: TilesWaterZxyGetPathParams,
     ) -> Result<TilesWaterZxyGetResponse, String> {
-        todo!()
+        let TilesWaterZxyGetPathParams { z, x, y } = path_params;
+
+        let tile_path = calc_tile_path(z as u32, x as u32, y as u32);
+
+        let query = query(
+            &format!(r#"
+MATCH {tile_path}-[:MEMBER]->(n:RiverNode)-[:WATER_LEVEL]->(wl:WaterLevel)
+RETURN n.location AS location, wl.value AS water_level
+            "#)
+        );
+
+        let mut result = self.graph.execute(query)
+            .await
+            .unwrap();
+
+        let mut nodes = Vec::<RiverNode>::new();
+
+        while let Ok(Some(row)) = result.next().await {
+            let location: BoltPoint2D = row.get("location").unwrap();
+            let water_level: BoltFloat = row.get("water_level").unwrap();
+
+            println!("{:?}, {:?}", location, water_level);
+
+            nodes.push(RiverNode {
+                location: Point2::new(location.x.value, location.y.value),
+                water_level: water_level.value,
+            });
+        }
+
+        println!("{:?}", nodes);
+
+        //let data = generate_warter_surfce_data(nodes, x as u32, y as u32, z as u32);
+        let data = gen_poly(nodes, x as u32, y as u32, z as u32);
+
+        Ok(TilesWaterZxyGetResponse::Status200 {
+            body: ByteArray(data),
+            content_encoding: None,
+        })
     }
 }
+
+// あるタイル座標までのレベル0のタイルからのパスを計算
+fn calc_tile_path(z: u32, x: u32, y: u32) -> String {
+    (0..=z).map(|current_z| {
+        // 算術演算で求める
+        let x = x >> (z - current_z);
+        let y = y >> (z - current_z);
+        format!("(:Tile{current_z}{{x:{x},y:{y}}})")
+    }).collect::<Vec<_>>()
+        .join("-[:CHILD]->")
+}
+
+#[derive(Debug)]
+struct RiverNode {
+    location: Point2<f64>,
+    water_level: f64,
+}
+
+impl HasPosition for RiverNode {
+    type Scalar = f64;
+
+    fn position(&self) -> Point2<f64> {
+        self.location
+    }
+}
+
+fn gen_poly(nodes: Vec<RiverNode>, tile_x: u32, tile_y: u32, zoom: u32) -> Vec<u8> {
+    let mut t = DelaunayTriangulation::<RiverNode>::bulk_load(nodes).unwrap();
+    let b = t.barycentric();
+
+    let res = {
+        let (_long, lat) = pixel2ll((tile_x * 256, tile_y * 256), ZoomLv::parse(zoom).unwrap());
+
+        pixel_resolution(lat, ZoomLv::parse(zoom).unwrap()) as f32
+    };
+
+
+    let query_points = {
+        let left_top = (tile_x * 256, tile_y * 256);
+        let right_top = ((tile_x + 1) * 256, tile_y * 256);
+        let right_bottom = ((tile_x + 1) * 256, (tile_y + 1) * 256);
+        let left_bottom = (tile_x * 256, (tile_y + 1) * 256);
+
+        vec![left_top.clone(), right_top.clone(), right_bottom.clone(), left_bottom.clone()]
+    };
+
+    let points = query_points.iter().map(|point| {
+        let ll = pixel2ll((point.0 as u32, point.1 as u32), ZoomLv::parse(zoom).unwrap());
+        let ll_point = Point2::new(ll.0.to_degrees(), ll.1.to_degrees());
+
+        let water_level = b.interpolate(|v| v.data().water_level, ll_point).unwrap_or_default() as f32;
+
+        (point, water_level)
+    }).collect::<Vec<_>>();
+
+
+    let points = [
+        Point3D::new([0., 0., points[0].1]),
+        Point3D::new([res, 0., points[1].1]),
+        Point3D::new([res, res, points[2].1]),
+        Point3D::new([0., res, points[3].1]),
+    ];
+
+    let vmesh = VMesh::create_water_surface(points);
+
+
+    Glb::from_vmesh(vmesh).unwrap().to_vec().unwrap()
+}
+
